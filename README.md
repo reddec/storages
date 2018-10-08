@@ -54,6 +54,11 @@ No-Operation storage that drops any content and returns not-exists on any reques
 
 Useful for mocking, performance testing or for any other logic that needs discard storage.
 
+### Redis
+
+import: `github.com/reddec/storages/redistorage`
+
+Wrapper around Redis hasmap where one storage is one hashmap.
 
 # Collection of deduplicate methods
 

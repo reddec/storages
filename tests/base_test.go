@@ -6,6 +6,7 @@ import (
 	"github.com/reddec/storages/filestorage"
 	"github.com/reddec/storages/leveldbstorage"
 	"github.com/reddec/storages/memstorage"
+	"github.com/reddec/storages/redistorage"
 	"os"
 	"testing"
 )
@@ -31,6 +32,11 @@ func Test_Storages(t *testing.T) {
 	// memory storage
 	testDir = "../test/memory-storage"
 	stor = memstorage.New()
+	testStorage(t, stor, testDir)
+
+	// redis storage (REDIS should be installed and started on default port)
+	testDir = "../test/redis-storage"
+	stor = redistorage.MustNew("data", "redis://127.0.0.1")
 	testStorage(t, stor, testDir)
 }
 

@@ -2,6 +2,21 @@
 
 
 [[projects]]
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/singleflight",
+    "internal/util"
+  ]
+  revision = "f3bba01df2026fc865f7782948845db9cf44cf23"
+  version = "v6.14.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/snappy"
   packages = ["."]
@@ -41,6 +56,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a47a6c91801684b93c42c7aa7d628f48e4291cf990cc49e3926c91bfd273c4f9"
+  inputs-digest = "a1c2e3a36dcf6532005309e2611fabdccf3af5be5f8f3b3613460cebf758ec5b"
   solver-name = "gps-cdcl"
   solver-version = 1
