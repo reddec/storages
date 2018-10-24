@@ -26,6 +26,12 @@ type Storage interface {
 	Keys(handler func(key []byte) error) error
 }
 
+// Atomic (batch) writer
+type BatchedStorage interface {
+	Storage
+	BatchWriter() Writer
+}
+
 // Extract all keys from storage as-is
 func AllKeys(storage Storage) ([][]byte, error) {
 	if storage == nil {

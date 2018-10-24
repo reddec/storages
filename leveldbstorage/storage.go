@@ -7,11 +7,6 @@ import (
 	"os"
 )
 
-type BatchedStorage interface {
-	storages.Storage
-	Batch() storages.Writer
-}
-
 type leveldbMap struct {
 	db *leveldb.DB
 }
@@ -52,7 +47,7 @@ func (bdp *leveldbMap) Keys(handler func(key []byte) error) error {
 func (bdp *leveldbMap) Close() error { return bdp.db.Close() }
 
 // New storage, base on go-leveldb store
-func New(location string) (BatchedStorage, error) {
+func New(location string) (storages.BatchedStorage, error) {
 	db, err := leveldb.OpenFile(location, nil)
 	if err != nil {
 		return nil, err
@@ -65,7 +60,7 @@ type dbBatch struct {
 	db    *leveldb.DB
 }
 
-func (bdp *leveldbMap) Batch() storages.Writer {
+func (bdp *leveldbMap) BatchWriter() storages.Writer {
 	batch := new(leveldb.Batch)
 	return &dbBatch{batch: batch, db: bdp.db}
 }
