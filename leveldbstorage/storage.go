@@ -3,8 +3,14 @@ package leveldbstorage
 import (
 	"github.com/reddec/storages"
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/syndtr/goleveldb/leveldb/opt"
 	"os"
 )
+
+type BatchedStorage interface {
+	storages.Storage
+	Batch() storages.Writer
+}
 
 type leveldbMap struct {
 	db *leveldb.DB
@@ -46,10 +52,29 @@ func (bdp *leveldbMap) Keys(handler func(key []byte) error) error {
 func (bdp *leveldbMap) Close() error { return bdp.db.Close() }
 
 // New storage, base on go-leveldb store
-func New(location string) (storages.Storage, error) {
+func New(location string) (BatchedStorage, error) {
 	db, err := leveldb.OpenFile(location, nil)
 	if err != nil {
 		return nil, err
 	}
 	return &leveldbMap{db: db}, nil
+}
+
+type dbBatch struct {
+	batch *leveldb.Batch
+	db    *leveldb.DB
+}
+
+func (bdp *leveldbMap) Batch() storages.Writer {
+	batch := new(leveldb.Batch)
+	return &dbBatch{batch: batch, db: bdp.db}
+}
+
+func (dbt *dbBatch) Put(key []byte, data []byte) error {
+	dbt.batch.Put(key, data)
+	return nil
+}
+
+func (dbt *dbBatch) Close() error {
+	return dbt.db.Write(dbt.batch, &opt.WriteOptions{})
 }
