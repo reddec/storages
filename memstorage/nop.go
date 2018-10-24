@@ -12,9 +12,10 @@ func (np *nopStorage) Get(key []byte) ([]byte, error)            { return nil, o
 func (np *nopStorage) Del(key []byte) error                      { return nil }
 func (np *nopStorage) Keys(handler func(key []byte) error) error { return nil }
 func (np *nopStorage) Close() error                              { return nil }
+func (np *nopStorage) BatchWriter() storages.Writer              { return NewNOP() }
 
 // New No-Operation storage that drops any content and returns not-exists on any request.
 // Useful for mocking, performance testing or for dropping several keys.
-func NewNOP() storages.Storage {
+func NewNOP() storages.BatchedStorage {
 	return &nopStorage{}
 }
