@@ -59,7 +59,36 @@ func (bdp *memoryMap) Keys(handler func(key []byte) error) error {
 
 func (ds *memoryMap) Close() error { return nil } // NOP
 
+type memBatch struct {
+	data map[string][]byte
+	mm   *memoryMap
+}
+
+func (mb *memBatch) Put(key []byte, value []byte) error {
+	cp := make([]byte, len(value))
+	copy(cp, value)
+	mb.data[string(key)] = cp
+	return nil
+}
+
+func (mb *memBatch) Close() error {
+	mb.mm.lock.Lock()
+	defer mb.mm.lock.Unlock()
+	if mb.mm.db == nil {
+		mb.mm.db = make(map[string][]byte)
+	}
+	for k, v := range mb.data {
+		mb.mm.db[k] = v
+	}
+	mb.data = nil
+	return nil
+}
+
+func (ds *memoryMap) BatchWriter() storages.Writer {
+	return &memBatch{data: make(map[string][]byte), mm: ds}
+}
+
 // New in-memory storage, based on Go concurrent map. For each Add and Get new copy of key and data will be made.
-func New() storages.Storage {
+func New() storages.BatchedStorage {
 	return &memoryMap{}
 }
