@@ -2,18 +2,28 @@ package storages
 
 import "io"
 
-// Thread-safe storage for key-value
-type Storage interface {
+// Key-value writer
+type Writer interface {
 	// Put single item to storage. If already exists - override
 	Put(key []byte, data []byte) error
+}
+
+// Thread-safe storage for key-value
+type KV interface {
+	Writer
 	// Get item from storage. If not exists - os.ErrNotExist (implementation independent)
 	Get(key []byte) ([]byte, error)
 	// Delete key and value
 	Del(key []byte) error
-	// Iterate over all keys. Modification during iteration may cause undefined behaviour (mostly - dead-lock)
-	Keys(handler func(key []byte) error) error
 	// Close storage if needs
 	io.Closer
+}
+
+// Extension for KV storage with iterator over keys
+type Storage interface {
+	KV
+	// Iterate over all keys. Modification during iteration may cause undefined behaviour (mostly - dead-lock)
+	Keys(handler func(key []byte) error) error
 }
 
 // Extract all keys from storage as-is
