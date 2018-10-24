@@ -6,6 +6,8 @@ import "io"
 type Writer interface {
 	// Put single item to storage. If already exists - override
 	Put(key []byte, data []byte) error
+	// Close storage if needs
+	io.Closer
 }
 
 // Thread-safe storage for key-value
@@ -15,8 +17,6 @@ type KV interface {
 	Get(key []byte) ([]byte, error)
 	// Delete key and value
 	Del(key []byte) error
-	// Close storage if needs
-	io.Closer
 }
 
 // Extension for KV storage with iterator over keys
