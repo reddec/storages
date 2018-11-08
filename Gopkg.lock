@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/dave/jennifer"
+  packages = ["jen"]
+  revision = "e2c46c587b5f3cf3dec985fd8f7e8232f9e40ac9"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/go-redis/redis"
   packages = [
     ".",
@@ -27,6 +33,12 @@
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/reddec/astools"
+  packages = ["."]
+  revision = "b5e2c3ee44008c7ed6730af9a1ca307f8e6ce5d0"
 
 [[projects]]
   branch = "master"
@@ -56,6 +68,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a1c2e3a36dcf6532005309e2611fabdccf3af5be5f8f3b3613460cebf758ec5b"
+  inputs-digest = "5d52e02e1ee977036d4e36a6677e6754eabdabdd49714433cc42bed1338e193a"
   solver-name = "gps-cdcl"
   solver-version = 1

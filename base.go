@@ -26,7 +26,7 @@ type Storage interface {
 	Keys(handler func(key []byte) error) error
 }
 
-// Atomic (batch) writer
+// Atomic (batch) writer. Batch storage should be used only in one thread
 type BatchedStorage interface {
 	Storage
 	BatchWriter() Writer
