@@ -63,20 +63,14 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 	file.Comment("Two level storage for " + typeName)
 	file.Type().Id(stName).StructFunc(func(struc *jen.Group) {
 		struc.Id("cold").Qual("github.com/reddec/storages", "Storage").Comment("persist storage")
-		struc.Id("hot").Qual("github.com/reddec/storages", "Storage").Comment("cache storage")
+		struc.Id("hot").Map(jen.String()).Add(jen.Op("*").Add(symQual)).Comment("cache storage")
 		struc.Id("lock").Qual("sync", "RWMutex")
 	})
 
 	file.Line()
 	file.Comment("Creates new storage for " + typeName + " with custom cache")
-	file.Func().Id("New"+stName).Params(jen.Id("cold").Qual("github.com/reddec/storages", "Storage"), jen.Id("hot").Qual("github.com/reddec/storages", "Storage")).Op("*").Id(stName).BlockFunc(func(fn *jen.Group) {
-		fn.Return(jen.Op("&").Id(stName).Values(jen.Id("cold").Op(":").Id("cold"), jen.Id("hot").Op(":").Id("hot")))
-	})
-
-	file.Line()
-	file.Comment("Creates new storage for " + typeName + " with in-memory cache")
-	file.Func().Id("NewMem" + stName).Params(jen.Id("cold").Qual("github.com/reddec/storages", "Storage")).Op("*").Id(stName).BlockFunc(func(fn *jen.Group) {
-		fn.Return(jen.Id("New"+stName).Call(jen.Id("cold"), jen.Qual("github.com/reddec/storages/memstorage", "New").Call()))
+	file.Func().Id("New" + stName).Params(jen.Id("cold").Qual("github.com/reddec/storages", "Storage")).Op("*").Id(stName).BlockFunc(func(fn *jen.Group) {
+		fn.Return(jen.Op("&").Id(stName).Values(jen.Id("cold").Op(":").Id("cold"), jen.Id("hot").Op(":").Make(jen.Map(jen.String()).Add(jen.Op("*").Add(symQual)))))
 	})
 
 	file.Line()
@@ -92,23 +86,20 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Err())
 		})
-		fn.Return(jen.Id("cs").Dot("hot").Dot("Put").Call(jen.Index().Byte().Parens(jen.Id("key")), jen.Id("data")))
+		fn.Id("cs").Dot("hot").Index(jen.Id("key")).Op("=").Id("item")
+		fn.Return(jen.Nil())
 	})
 
 	file.Line()
 	file.Comment("Get single " + typeName + " from hot storage and decode data as JSON. \nIf key is not in hot storage, the cold storage is used and obtained data is put to the hot storage for future cache")
-	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Get").Params(jen.Id("key").String()).Params(jen.List(jen.Op("*").Add(symQual), jen.Error())).BlockFunc(func(fn *jen.Group) {
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Get").Params(jen.Id("key").String()).Parens(jen.List(jen.Op("*").Add(symQual), jen.Error())).BlockFunc(func(fn *jen.Group) {
 		fn.Id("cs").Dot("lock").Dot("RLock").Call()
-		fn.List(jen.Id("data"), jen.Err()).Op(":=").Id("cs").Dot("hot").Dot("Get").Call(jen.Index().Byte().Parens(jen.Id("key")))
+		fn.List(jen.Id("item"), jen.Id("exists")).Op(":=").Id("cs").Dot("hot").Index(jen.Id("key"))
 		fn.Id("cs").Dot("lock").Dot("RUnlock").Call()
-		fn.If(jen.Err().Op("==").Qual("os", "ErrNotExist")).BlockFunc(func(group *jen.Group) {
-			group.List(jen.Id("data"), jen.Err()).Op("=").Id("cs").Dot("getMissed").Call(jen.Id("key"))
+		fn.If(jen.Id("exists")).BlockFunc(func(group *jen.Group) {
+			group.Return(jen.Id("item"), jen.Nil())
 		})
-		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
-			group.Return(jen.Nil(), jen.Err())
-		})
-		fn.Var().Id("item").Add(symQual)
-		fn.Return(jen.Op("&").Id("item"), jen.Qual("encoding/json", "Unmarshal").Call(jen.Id("data"), jen.Op("&").Id("item")))
+		fn.Return(jen.Id("cs").Dot("getMissed").Call(jen.Id("key")))
 	})
 
 	file.Line()
@@ -122,23 +113,27 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 				iterF.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 					group.Return(jen.Err())
 				})
-				iterF.Return(jen.Id("cs").Dot("hot").Dot("Put").Call(jen.Id("key"), jen.Id("data")))
+				iterF.Var().Id("item").Add(symQual)
+				iterF.Err().Op("=").Qual("encoding/json", "Unmarshal").Call(jen.Id("data"), jen.Op("&").Id("item"))
+				iterF.If(jen.Err().Op("==").Nil()).BlockFunc(func(group *jen.Group) {
+					group.Return(jen.Err())
+				})
+				iterF.Id("cs").Dot("hot").Index(jen.String().Parens(jen.Id("key"))).Op("=").Op("&").Id("item")
+				iterF.Return(jen.Nil())
 			})
 		}))
 	})
 
 	file.Line()
 	file.Comment("Keys copied slice that cached in hot storage")
-	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Keys").Params().Parens(jen.List(jen.Index().String(), jen.Error())).BlockFunc(func(fn *jen.Group) {
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Keys").Params().Index().String().BlockFunc(func(fn *jen.Group) {
 		fn.Id("cs").Dot("lock").Dot("RLock").Call()
 		fn.Defer().Id("cs").Dot("lock").Dot("RUnlock").Call()
-		fn.Var().Id("ans").Index().String()
-		fn.Return(jen.Id("ans"), jen.Id("cs").Dot("hot").Dot("Keys").CallFunc(func(group *jen.Group) {
-			group.Func().Params(jen.Id("key").Index().Byte()).Error().BlockFunc(func(iterF *jen.Group) {
-				iterF.Id("ans").Op("=").Append(jen.Id("ans"), jen.String().Parens(jen.Id("key")))
-				iterF.Return(jen.Nil())
-			})
-		}))
+		fn.Var().Id("ans").Op("=").Make(jen.Index().String(), jen.Lit(0), jen.Len(jen.Id("cs").Dot("hot")))
+		fn.For(jen.Id("key").Op(":=").Range().Id("cs").Dot("hot")).BlockFunc(func(group *jen.Group) {
+			group.Id("ans").Op("=").Append(jen.Id("ans"), jen.Id("key"))
+		})
+		fn.Return(jen.Id("ans"))
 	})
 
 	file.Line()
@@ -150,28 +145,29 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Err())
 		})
-		fn.Err().Op("=").Id("cs").Dot("hot").Dot("Del").Call(jen.Index().Byte().Parens(jen.Id("key")))
-		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
-			group.Return(jen.Err())
-		})
+		fn.Delete(jen.Id("cs").Dot("hot"), jen.Id("key"))
 		fn.Return(jen.Nil())
 	})
 
 	file.Line()
-	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("getMissed").Params(jen.Id("key").String()).Parens(jen.List(jen.Index().Byte(), jen.Error())).BlockFunc(func(fn *jen.Group) {
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("getMissed").Params(jen.Id("key").String()).Parens(jen.List(jen.Op("*").Add(symQual), jen.Error())).BlockFunc(func(fn *jen.Group) {
 		fn.Id("cs").Dot("lock").Dot("Lock").Call()
 		fn.Defer().Id("cs").Dot("lock").Dot("Unlock").Call()
-		fn.List(jen.Id("data"), jen.Err()).Op(":=").Id("cs").Dot("hot").Dot("Get").Call(jen.Index().Byte().Parens(jen.Id("key")))
-		fn.If(jen.Err().Op("==").Nil()).BlockFunc(func(group *jen.Group) {
-			group.Return(jen.Id("data"), jen.Nil())
-		}).Else().If(jen.Err().Op("!=").Qual("os", "ErrNotExist")).BlockFunc(func(group *jen.Group) {
-			group.Return(jen.Nil(), jen.Err())
+		fn.List(jen.Id("sitem"), jen.Id("exists")).Op(":=").Id("cs").Dot("hot").Index(jen.Id("key"))
+		fn.If(jen.Id("exists")).BlockFunc(func(group *jen.Group) {
+			group.Return(jen.Id("sitem"), jen.Nil())
 		})
-		fn.List(jen.Id("data"), jen.Err()).Op("=").Id("cs").Dot("cold").Dot("Get").Call(jen.Index().Byte().Parens(jen.Id("key")))
+		fn.List(jen.Id("data"), jen.Err()).Op(":=").Id("cs").Dot("cold").Dot("Get").Call(jen.Index().Byte().Parens(jen.Id("key")))
 		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Nil(), jen.Err())
 		})
-		fn.Return(jen.Id("data"), jen.Id("cs").Dot("hot").Dot("Put").Call(jen.Index().Byte().Parens(jen.Id("key")), jen.Id("data")))
+		fn.Var().Id("item").Add(symQual)
+		fn.Err().Op("=").Qual("encoding/json", "Unmarshal").Call(jen.Id("data"), jen.Op("&").Id("item"))
+		fn.If(jen.Err().Op("==").Nil()).BlockFunc(func(group *jen.Group) {
+			group.Return(jen.Nil(), jen.Err())
+		})
+		fn.Id("cs").Dot("hot").Index(jen.Id("key")).Op("=").Op("&").Id("item")
+		fn.Return(jen.Op("&").Id("item"), jen.Nil())
 	})
 
 	return file, nil
