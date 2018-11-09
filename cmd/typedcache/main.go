@@ -142,7 +142,23 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 	})
 
 	file.Line()
-	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("getMissed").Params(jen.Id("key").String()).Params(jen.List(jen.Index().Byte(), jen.Error())).BlockFunc(func(fn *jen.Group) {
+	file.Comment("Del key from hot and cold storage")
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Del").Params(jen.Id("key").String()).Error().BlockFunc(func(fn *jen.Group) {
+		fn.Id("cs").Dot("lock").Dot("Lock").Call()
+		fn.Defer().Id("cs").Dot("lock").Dot("Unlock").Call()
+		fn.Err().Op(":=").Id("cs").Dot("cold").Dot("Del").Call(jen.Index().Byte().Parens(jen.Id("key")))
+		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
+			group.Return(jen.Err())
+		})
+		fn.Err().Op("=").Id("cs").Dot("hot").Dot("Del").Call(jen.Index().Byte().Parens(jen.Id("key")))
+		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
+			group.Return(jen.Err())
+		})
+		fn.Return(jen.Nil())
+	})
+
+	file.Line()
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("getMissed").Params(jen.Id("key").String()).Parens(jen.List(jen.Index().Byte(), jen.Error())).BlockFunc(func(fn *jen.Group) {
 		fn.Id("cs").Dot("lock").Dot("Lock").Call()
 		fn.Defer().Id("cs").Dot("lock").Dot("Unlock").Call()
 		fn.List(jen.Id("data"), jen.Err()).Op(":=").Id("cs").Dot("hot").Dot("Get").Call(jen.Index().Byte().Parens(jen.Id("key")))
