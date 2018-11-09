@@ -2,12 +2,23 @@
 
 
 [[projects]]
+  digest = "1:12bc53a794bd3f5169f71e87c18e15df70c51324e51d84a6b83dbdadf366d2c7"
   name = "github.com/dave/jennifer"
   packages = ["jen"]
+  pruneopts = "UT"
   revision = "e2c46c587b5f3cf3dec985fd8f7e8232f9e40ac9"
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:7c2fd446293ff7799cc496d3446e674ee67902d119f244de645caf95dff1bb98"
   name = "github.com/go-redis/redis"
   packages = [
     ".",
@@ -17,37 +28,55 @@
     "internal/pool",
     "internal/proto",
     "internal/singleflight",
-    "internal/util"
+    "internal/util",
   ]
+  pruneopts = "UT"
   revision = "f3bba01df2026fc865f7782948845db9cf44cf23"
   version = "v6.14.1"
 
 [[projects]]
   branch = "master"
+  digest = "1:4a0c6bb4805508a6287675fac876be2ac1182539ca8a32468d8128882e9d5009"
   name = "github.com/golang/snappy"
   packages = ["."]
+  pruneopts = "UT"
   revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
 
 [[projects]]
+  branch = "master"
+  digest = "1:901625a0300fa83074dcf2510424c26a19dc3edadf67b34ca45a78f879ac4b0c"
+  name = "github.com/knq/snaker"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d9ad1e7f342a5b58202aa92c5f1106d7bb8b9c73"
+
+[[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
   branch = "master"
-  name = "github.com/reddec/astools"
-  packages = ["."]
-  revision = "b5e2c3ee44008c7ed6730af9a1ca307f8e6ce5d0"
-
-[[projects]]
-  branch = "master"
+  digest = "1:8adbae7eb04ba161b6d23301f1cceaa4cfd7c99c8547affd7dba71792e5d2e8c"
   name = "github.com/reddec/chop-text"
   packages = ["."]
+  pruneopts = "UT"
   revision = "6118a9210e965b7bbe096af5320119c559218cb8"
 
 [[projects]]
   branch = "master"
+  digest = "1:c01ff79cc4168e309851038973528b441981c440ac4b6c007b4ce89f88c4788d"
+  name = "github.com/reddec/symbols"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bba48d4085df1cdb483b3d08dd6334ec0cb357a4"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f2ffd421680b0a3f7887501b3c6974bcf19217ecd301d0e2c9b681940ec363d5"
   name = "github.com/syndtr/goleveldb"
   packages = [
     "leveldb",
@@ -61,13 +90,23 @@
     "leveldb/opt",
     "leveldb/storage",
     "leveldb/table",
-    "leveldb/util"
+    "leveldb/util",
   ]
+  pruneopts = "UT"
   revision = "ae2bd5eed72d46b28834ec3f60db3a3ebedd8dbd"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5d52e02e1ee977036d4e36a6677e6754eabdabdd49714433cc42bed1338e193a"
+  input-imports = [
+    "github.com/dave/jennifer/jen",
+    "github.com/go-redis/redis",
+    "github.com/knq/snaker",
+    "github.com/pkg/errors",
+    "github.com/reddec/chop-text",
+    "github.com/reddec/symbols",
+    "github.com/syndtr/goleveldb/leveldb",
+    "github.com/syndtr/goleveldb/leveldb/opt",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
