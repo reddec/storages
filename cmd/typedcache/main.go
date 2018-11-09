@@ -115,7 +115,7 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 				})
 				iterF.Var().Id("item").Add(symQual)
 				iterF.Err().Op("=").Qual("encoding/json", "Unmarshal").Call(jen.Id("data"), jen.Op("&").Id("item"))
-				iterF.If(jen.Err().Op("==").Nil()).BlockFunc(func(group *jen.Group) {
+				iterF.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 					group.Return(jen.Err())
 				})
 				iterF.Id("cs").Dot("hot").Index(jen.String().Parens(jen.Id("key"))).Op("=").Op("&").Id("item")
@@ -163,7 +163,7 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 		})
 		fn.Var().Id("item").Add(symQual)
 		fn.Err().Op("=").Qual("encoding/json", "Unmarshal").Call(jen.Id("data"), jen.Op("&").Id("item"))
-		fn.If(jen.Err().Op("==").Nil()).BlockFunc(func(group *jen.Group) {
+		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Nil(), jen.Err())
 		})
 		fn.Id("cs").Dot("hot").Index(jen.Id("key")).Op("=").Op("&").Id("item")
