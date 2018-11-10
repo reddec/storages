@@ -14,6 +14,7 @@ var tpName = flag.String("type", "", "Type name to wrap")
 var pkName = flag.String("package", "", "Output package (default: same as in input file)")
 var ouName = flag.String("out", "", "Output file (default: <type name>_storage.go)")
 var codec = flag.String("codec", "json", "Encoder/Decoder for the type: json, msgp")
+var keyPrefix = flag.String("prefix", "", "Custom key prefix")
 
 func main() {
 	flag.Parse()
@@ -24,8 +25,11 @@ func main() {
 	if *ouName == "" {
 		*ouName = snaker.CamelToSnake(*tpName) + "_storage.go"
 	}
-
-	f, err := generate(".", *tpName, *pkName, getCodec(*codec))
+	var key Keyer = &simpleKey{}
+	if *keyPrefix != "" {
+		key = &nsKey{*keyPrefix}
+	}
+	f, err := generate(".", *tpName, *pkName, getCodec(*codec), key)
 	if err != nil {
 		panic(err)
 	}
@@ -40,9 +44,28 @@ func main() {
 	}
 }
 
-type codecGen struct {
-	encoder jen.Code
-	decoder jen.Code
+type Keyer interface {
+	ForStor() jen.Code
+	ForView() jen.Code
+	Filter() jen.Code
+}
+
+type simpleKey struct{}
+
+func (sk *simpleKey) ForStor() jen.Code { return jen.Id("key") }
+func (sk *simpleKey) ForView() jen.Code { return jen.String().Parens(jen.Id("key")) }
+func (sk *simpleKey) Filter() jen.Code  { return jen.Null() }
+
+type nsKey struct{ prefix string }
+
+func (sk *nsKey) ForStor() jen.Code { return jen.Lit(*keyPrefix).Op("+").Id("key") }
+func (sk *nsKey) ForView() jen.Code {
+	return jen.String().Parens(jen.Id("key")).Index(jen.Lit(len(sk.prefix)), jen.Null())
+}
+func (sk *nsKey) Filter() jen.Code {
+	return jen.If(jen.Op("!").Qual("strings", "HasPrefix").Call(jen.String().Parens(jen.Id("key")), jen.Lit(sk.prefix))).BlockFunc(func(group *jen.Group) {
+		group.Return(jen.Nil())
+	})
 }
 
 type Codec interface {
@@ -86,7 +109,7 @@ func getCodec(name string) Codec {
 	}
 }
 
-func generate(dirName, typeName string, pkgName string, codec Codec) (*jen.File, error) {
+func generate(dirName, typeName string, pkgName string, codec Codec, key Keyer) (*jen.File, error) {
 	project, err := symbols.ProjectByDir(dirName)
 	if err != nil {
 		return nil, err
@@ -125,14 +148,14 @@ func generate(dirName, typeName string, pkgName string, codec Codec) (*jen.File,
 		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Err())
 		})
-		fn.Err().Op("=").Id("cs").Dot("cold").Dot("Put").Call(jen.Index().Byte().Parens(jen.Id("key")), jen.Id("data"))
+		fn.Err().Op("=").Id("cs").Dot("cold").Dot("Put").Call(jen.Index().Byte().Parens(key.ForStor()), jen.Id("data"))
 		fn.Return(jen.Err())
 	})
 
 	file.Line()
 	file.Comment("Get single " + typeName + " from storage and decode data as JSON")
 	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Get").Params(jen.Id("key").String()).Parens(jen.List(jen.Op("*").Add(symQual), jen.Error())).BlockFunc(func(fn *jen.Group) {
-		fn.List(jen.Id("data"), jen.Err()).Op(":=").Id("cs").Dot("cold").Dot("Get").Call(jen.Index().Byte().Parens(jen.Id("key")))
+		fn.List(jen.Id("data"), jen.Err()).Op(":=").Id("cs").Dot("cold").Dot("Get").Call(jen.Index().Byte().Parens(key.ForStor()))
 		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Nil(), jen.Err())
 		})
@@ -147,7 +170,7 @@ func generate(dirName, typeName string, pkgName string, codec Codec) (*jen.File,
 	file.Line()
 	file.Comment("Del key from hot and cold storage")
 	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Del").Params(jen.Id("key").String()).Error().BlockFunc(func(fn *jen.Group) {
-		fn.Err().Op(":=").Id("cs").Dot("cold").Dot("Del").Call(jen.Index().Byte().Parens(jen.Id("key")))
+		fn.Err().Op(":=").Id("cs").Dot("cold").Dot("Del").Call(jen.Index().Byte().Parens(key.ForStor()))
 		fn.Return(jen.Err())
 	})
 
@@ -156,7 +179,8 @@ func generate(dirName, typeName string, pkgName string, codec Codec) (*jen.File,
 	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Keys").Params().Parens(jen.List(jen.Index().String(), jen.Error())).BlockFunc(func(fn *jen.Group) {
 		fn.Var().Id("ans").Index().String()
 		fn.Return(jen.Id("ans"), jen.Id("cs").Dot("cold").Dot("Keys").Call(jen.Func().Params(jen.Id("key").Index().Byte()).Error().BlockFunc(func(group *jen.Group) {
-			group.Id("ans").Op("=").Append(jen.Id("ans"), jen.String().Parens(jen.Id("key")))
+			group.Add(key.Filter())
+			group.Id("ans").Op("=").Append(jen.Id("ans"), key.ForView())
 			group.Return(jen.Nil())
 		})))
 	})

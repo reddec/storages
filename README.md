@@ -163,6 +163,8 @@ Typed wrapper around any storage with JSON encoding by default with in-memory ca
             Output file (default: <type name>_storage.go)
       -package string
             Output package (default: same as in input file)
+      -prefix string
+            Custom key prefix
       -type string
             Type name to wrap
 
