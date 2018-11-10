@@ -156,9 +156,9 @@ func (cs *SampleStorage) Keys() ([]string, error) {}
 
 Typed wrapper around any storage with JSON encoding by default with in-memory cache.
 
-Usage:
-
     Usage of typedstorage:
+      -codec string
+            Encoder/Decoder for the type: json, msgp (default "json")
       -out string
             Output file (default: <type name>_storage.go)
       -package string
@@ -167,6 +167,7 @@ Usage:
             Type name to wrap
 
 
+Note: `msgp` codec requires msgp binding
 
 Embedded usage example:
 

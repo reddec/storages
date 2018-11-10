@@ -13,6 +13,7 @@ import (
 var tpName = flag.String("type", "", "Type name to wrap")
 var pkName = flag.String("package", "", "Output package (default: same as in input file)")
 var ouName = flag.String("out", "", "Output file (default: <type name>_storage.go)")
+var codec = flag.String("codec", "json", "Encoder/Decoder for the type: json, msgp")
 
 func main() {
 	flag.Parse()
@@ -24,7 +25,7 @@ func main() {
 		*ouName = snaker.CamelToSnake(*tpName) + "_storage.go"
 	}
 
-	f, err := generate(".", *tpName, *pkName)
+	f, err := generate(".", *tpName, *pkName, getCodec(*codec))
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +40,53 @@ func main() {
 	}
 }
 
-func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
+type codecGen struct {
+	encoder jen.Code
+	decoder jen.Code
+}
+
+type Codec interface {
+	Encode() jen.Code
+	Decode() jen.Code
+	Header(typeName string) jen.Code
+}
+
+type jsonCodec struct{}
+
+func (jc *jsonCodec) Encode() jen.Code {
+	return jen.Qual("encoding/json", "Marshal").Call(jen.Id("item"))
+}
+func (jc *jsonCodec) Decode() jen.Code {
+	return jen.Err().Op("=").Qual("encoding/json", "Unmarshal").Call(jen.Id("data"), jen.Op("&").Id("item"))
+}
+func (jc *jsonCodec) Header(typeName string) jen.Code {
+	return jen.Null()
+}
+
+type msgCodec struct{}
+
+func (jc *msgCodec) Encode() jen.Code {
+	return jen.Id("item").Dot("MarshalMsg").Call(jen.Nil())
+}
+func (jc *msgCodec) Decode() jen.Code {
+	return jen.List(jen.Id("_"), jen.Err()).Op("=").Id("item").Dot("UnmarshalMsg").Call(jen.Id("data"))
+}
+func (jc *msgCodec) Header(typeName string) jen.Code {
+	return jen.Null()
+}
+
+func getCodec(name string) Codec {
+	switch name {
+	case "json":
+		return &jsonCodec{}
+	case "msgp":
+		return &msgCodec{}
+	default:
+		panic("unknown codec " + name)
+	}
+}
+
+func generate(dirName, typeName string, pkgName string, codec Codec) (*jen.File, error) {
 	project, err := symbols.ProjectByDir(dirName)
 	if err != nil {
 		return nil, err
@@ -74,7 +121,7 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 	file.Line()
 	file.Comment("Put single " + typeName + " encoded in JSON into storage")
 	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Put").Params(jen.Id("key").String(), jen.Id("item").Op("*").Add(symQual)).Params(jen.Error()).BlockFunc(func(fn *jen.Group) {
-		fn.List(jen.Id("data"), jen.Err()).Op(":=").Qual("encoding/json", "Marshal").Call(jen.Id("item"))
+		fn.List(jen.Id("data"), jen.Err()).Op(":=").Add(codec.Encode())
 		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Err())
 		})
@@ -90,7 +137,7 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 			group.Return(jen.Nil(), jen.Err())
 		})
 		fn.Var().Id("item").Add(symQual)
-		fn.Err().Op("=").Qual("encoding/json", "Unmarshal").Call(jen.Id("data"), jen.Op("&").Id("item"))
+		fn.Add(codec.Decode())
 		fn.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 			group.Return(jen.Nil(), jen.Err())
 		})
@@ -113,6 +160,9 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 			group.Return(jen.Nil())
 		})))
 	})
+
+	file.Line()
+	file.Add(codec.Header(stName))
 
 	return file, nil
 }
