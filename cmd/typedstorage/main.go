@@ -60,7 +60,7 @@ type nsKey struct{ prefix string }
 
 func (sk *nsKey) ForStor() jen.Code { return jen.Lit(*keyPrefix).Op("+").Id("key") }
 func (sk *nsKey) ForView() jen.Code {
-	return jen.String().Parens(jen.Id("key")).Index(jen.Lit(len(sk.prefix)), jen.Null())
+	return jen.String().Parens(jen.Id("key")).Index(jen.Lit(len(sk.prefix)), jen.Empty())
 }
 func (sk *nsKey) Filter() jen.Code {
 	return jen.If(jen.Op("!").Qual("strings", "HasPrefix").Call(jen.String().Parens(jen.Id("key")), jen.Lit(sk.prefix))).BlockFunc(func(group *jen.Group) {
