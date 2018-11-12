@@ -186,6 +186,19 @@ func generate(dirName, typeName string, pkgName string, codec Codec, key Keyer) 
 	})
 
 	file.Line()
+	file.Comment("Iterate over all items")
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Iterate").Params(jen.Id("handler").Func().Params(jen.String(), jen.Op("*").Add(symQual)).Error()).Error().BlockFunc(func(fn *jen.Group) {
+		fn.Return(jen.Id("cs").Dot("cold").Dot("Keys").Call(jen.Func().Params(jen.Id("key").Index().Byte()).Error().BlockFunc(func(group *jen.Group) {
+			group.Add(key.Filter())
+			group.List(jen.Id("item"), jen.Err()).Op(":=").Id("cs").Dot("Get").Call(key.ForView())
+			group.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
+				group.Return(jen.Err())
+			})
+			group.Return(jen.Id("handler").Call(jen.String().Parens(jen.Id("key")), jen.Id("item")))
+		})))
+	})
+
+	file.Line()
 	file.Add(codec.Header(stName))
 
 	return file, nil
