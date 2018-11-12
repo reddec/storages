@@ -194,7 +194,17 @@ func generate(dirName, typeName string, pkgName string, codec Codec, key Keyer) 
 			group.If(jen.Err().Op("!=").Nil()).BlockFunc(func(group *jen.Group) {
 				group.Return(jen.Err())
 			})
-			group.Return(jen.Id("handler").Call(jen.String().Parens(jen.Id("key")), jen.Id("item")))
+			group.Return(jen.Id("handler").Call(jen.String().Parens(key.ForView()), jen.Id("item")))
+		})))
+	})
+
+	file.Line()
+	file.Comment("View makes a map of all items")
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("View").Params().Parens(jen.List(jen.Map(jen.String()).Op("*").Add(symQual), jen.Error())).BlockFunc(func(fn *jen.Group) {
+		fn.Var().Id("ans").Op("=").Make(jen.List(jen.Map(jen.String()).Op("*").Add(symQual)))
+		fn.Return(jen.Id("ans"), jen.Id("cs").Dot("Iterate").Call(jen.Func().Params(jen.Id("key").String(), jen.Id("item").Op("*").Add(symQual)).Error().BlockFunc(func(group *jen.Group) {
+			group.Id("ans").Index(jen.Id("key")).Op("=").Id("item")
+			group.Return(jen.Nil())
 		})))
 	})
 
