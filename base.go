@@ -19,6 +19,16 @@ type KV interface {
 	Del(key []byte) error
 }
 
+// Access only interface for storage
+type Accessor interface {
+	// Get item from storage. If not exists - os.ErrNotExist (implementation independent)
+	Get(key []byte) ([]byte, error)
+	// Put single item to storage. If already exists - override
+	Put(key []byte, data []byte) error
+	// Delete key and value
+	Del(key []byte) error
+}
+
 // Extension for KV storage with iterator over keys
 type Storage interface {
 	KV

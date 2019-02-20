@@ -1,4 +1,4 @@
-# Collection of storages
+# Collection of storages (and wrappers)
 
 Different implementations of storages with same abstract interface:
 
@@ -59,6 +59,19 @@ Useful for mocking, performance testing or for any other logic that needs discar
 import: `github.com/reddec/storages/redistorage`
 
 Wrapper around Redis hasmap where one storage is one hashmap.
+
+# Queues
+
+Wrappers around KV-storage that makes a queues. Idea is to keep minimal and maximum id and use sequence to generate 
+next key for KV storage.
+
+import: `github.com/reddec/storages/queues`
+
+## Basic queue
+
+* peek - get last but do not remove
+* put - push data to the end of queue
+* clean - remove data from the first till specified sequence id. Remove all is: `Clean(queue.Last()+1)`
 
 # Collection of deduplicate methods
 
