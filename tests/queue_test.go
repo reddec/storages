@@ -1,9 +1,11 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/reddec/storages"
 	"github.com/reddec/storages/memstorage"
 	"github.com/reddec/storages/queues"
+	"strconv"
 	"testing"
 )
 
@@ -71,6 +73,10 @@ func TestQueue(t *testing.T) {
 	if !validateHelloWorld(t, q2) {
 		return
 	}
+	it := queue.Iterate(0)
+	for it.Next() {
+		fmt.Println("ID:", it.ID(), "Value:", string(it.Value()))
+	}
 	// test remove one
 	err = queue.Clean(queue.Last()) // up to
 	if err != nil {
@@ -91,6 +97,35 @@ func TestQueue(t *testing.T) {
 		return
 	}
 
+}
+
+func TestLimitedQueue(t *testing.T) {
+	mem := memstorage.New()
+	q, err := queues.SimpleLimited(mem, 2)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for i := 0; i < 10; i++ {
+		_, err = q.Put([]byte(strconv.Itoa(i)))
+		if err != nil {
+			t.Error(err)
+			return
+		}
+	}
+	if q.Size() != 2 {
+		t.Error("size should be 2")
+		return
+	}
+	_, data, err := q.Peek()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if string(data) != "9" {
+		t.Error("should be 9 but got: " + string(data))
+		return
+	}
 }
 
 func validateHelloWorld(t *testing.T, queue storages.Queue) bool {

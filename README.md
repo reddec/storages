@@ -73,6 +73,20 @@ import: `github.com/reddec/storages/queues`
 * put - push data to the end of queue
 * clean - remove data from the first till specified sequence id. Remove all is: `Clean(queue.Last()+1)`
 
+Constructors:
+
+* `Simple`
+* `SimpleBounded`
+
+## Limited queue
+
+Queue that removes old items if no more space available (like circular buffer) on `Put` operation.
+
+Constructors:
+
+* `Limited`
+* `SimpleLimited` - shorthand for `Limited(Simple(...))`
+
 # Collection of deduplicate methods
 
 All implementations should follow those interface

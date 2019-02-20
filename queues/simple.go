@@ -76,6 +76,21 @@ func (sq *simpleQueue) Last() int64 {
 	return sq.nextID - 1
 }
 
+func (sq *simpleQueue) Iterate(from int64) storages.Iterator {
+	sq.lock.RLock()
+	defer sq.lock.RUnlock()
+	if from == 0 {
+		from = sq.minID - 1
+	} else {
+		from -= 1
+	}
+	return &simpleIterator{
+		current: from,
+		storage: sq.storage,
+		max:     sq.nextID,
+	}
+}
+
 // Simple queue based on storage. Scans all keys to find minimum and maximum sequence number
 func Simple(storage storages.Storage) (storages.Queue, error) {
 	var min int64 = math.MaxInt64
@@ -112,4 +127,39 @@ func SimpleBound(storage storages.Accessor, minID, maxID int64) storages.Queue {
 		nextID:  nextId,
 		storage: storage,
 	}
+}
+
+type simpleIterator struct {
+	max      int64
+	current  int64
+	finished bool
+	value    []byte
+	storage  storages.Reader
+}
+
+func (si *simpleIterator) ID() int64 {
+	return si.current
+}
+
+func (si *simpleIterator) Value() []byte {
+	return si.value
+}
+
+func (si *simpleIterator) Next() bool {
+	if si.finished {
+		return false
+	}
+	if si.current >= si.max {
+		si.finished = true
+		return false
+	}
+	si.current += 1
+	key := strconv.FormatInt(si.current, 10)
+	if val, err := si.storage.Get([]byte(key)); err != nil {
+		si.finished = true
+		return false
+	} else {
+		si.value = val
+	}
+	return true
 }

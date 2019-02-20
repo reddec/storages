@@ -10,6 +10,12 @@ type Writer interface {
 	io.Closer
 }
 
+// Key-value reader
+type Reader interface {
+	// Get item from storage. If not exists - os.ErrNotExist (implementation independent)
+	Get(key []byte) ([]byte, error)
+}
+
 // Thread-safe storage for key-value
 type KV interface {
 	Writer

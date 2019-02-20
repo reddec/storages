@@ -16,4 +16,26 @@ type Queue interface {
 	First() int64
 	// last (latest) sequence id
 	Last() int64
+	// iterate over items from first (if from is 0) to last (next should be called first) or till first error.
+	// Iterator keeps min and max sequence number so cleaning items during iteration may cause iteration stop
+	Iterate(from int64) Iterator
+}
+
+// Queue iterator
+type Iterator interface {
+	// Is queue has next value
+	Next() bool
+	// Current id
+	ID() int64
+	// Current value
+	Value() []byte
+}
+
+// Queue with limited size
+type LimitedQueue interface {
+	Queue
+	// available space (limit - size)
+	Available() int64
+	// limit
+	Limit() int64
 }
