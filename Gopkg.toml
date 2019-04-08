@@ -26,12 +26,12 @@
 
 
 [[constraint]]
-  name = "github.com/pkg/errors"
-  version = "0.8.0"
-
-[[constraint]]
   branch = "master"
   name = "github.com/reddec/chop-text"
+
+[[constraint]]
+  name = "github.com/jessevdk/go-flags"
+  revision = "1c38ed7ad0cc3d9e66649ac398c30e45f395c4eb"
 
 [prune]
   go-tests = true

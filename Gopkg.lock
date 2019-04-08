@@ -43,6 +43,13 @@
   revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
 
 [[projects]]
+  digest = "1:3217800110ab50cd0e0784307be46b5344c0c103dbd15a16d0994ae4abdc96ab"
+  name = "github.com/jessevdk/go-flags"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "1c38ed7ad0cc3d9e66649ac398c30e45f395c4eb"
+
+[[projects]]
   branch = "master"
   digest = "1:901625a0300fa83074dcf2510424c26a19dc3edadf67b34ca45a78f879ac4b0c"
   name = "github.com/knq/snaker"
@@ -101,6 +108,7 @@
   input-imports = [
     "github.com/dave/jennifer/jen",
     "github.com/go-redis/redis",
+    "github.com/jessevdk/go-flags",
     "github.com/knq/snaker",
     "github.com/pkg/errors",
     "github.com/reddec/chop-text",
