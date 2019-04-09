@@ -110,7 +110,7 @@ func getCodec(name string) Codec {
 }
 
 func generate(dirName, typeName string, pkgName string, codec Codec, key Keyer) (*jen.File, error) {
-	project, err := symbols.ProjectByDir(dirName)
+	project, err := symbols.ProjectByDir(dirName, -1)
 	if err != nil {
 		return nil, err
 	}

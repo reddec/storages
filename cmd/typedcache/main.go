@@ -40,7 +40,7 @@ func main() {
 }
 
 func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
-	project, err := symbols.ProjectByDir(dirName)
+	project, err := symbols.ProjectByDir(dirName, -1)
 	if err != nil {
 		return nil, err
 	}
