@@ -2,7 +2,7 @@ package memstorage
 
 import (
 	"os"
-	"reddec/storages"
+	"storages"
 	"sync"
 )
 

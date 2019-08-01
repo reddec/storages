@@ -6,10 +6,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"reddec/storages"
-	"reddec/storages/filestorage"
-	"reddec/storages/leveldbstorage"
-	"reddec/storages/redistorage"
+	"storages"
+	"storages/filestorage"
+	"storages/leveldbstorage"
+	"storages/redistorage"
 )
 
 type source interface {

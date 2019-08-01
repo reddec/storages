@@ -1,4 +1,4 @@
-module reddec/storages
+module storages
 
 go 1.12
 
