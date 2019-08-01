@@ -1,8 +1,8 @@
 package memstorage
 
 import (
-	"github.com/reddec/storages"
 	"os"
+	"reddec/storages"
 )
 
 type nopStorage struct{}

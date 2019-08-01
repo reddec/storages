@@ -60,6 +60,12 @@ import: `github.com/reddec/storages/redistorage`
 
 Wrapper around Redis hasmap where one storage is one hashmap.
 
+### S3
+
+import: `github.com/reddec/storages/awsstorage`
+
+Wrapper around official S3 SDK to work with bucket as a map 
+
 # Queues
 
 Wrappers around KV-storage that makes a queues. Idea is to keep minimal and maximum id and use sequence to generate 

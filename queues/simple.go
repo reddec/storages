@@ -1,9 +1,9 @@
 package queues
 
 import (
-	"github.com/reddec/storages"
 	"math"
 	"os"
+	"reddec/storages"
 	"strconv"
 	"sync"
 )

@@ -1,10 +1,10 @@
 package leveldbstorage
 
 import (
-	"github.com/reddec/storages"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 	"os"
+	"reddec/storages"
 )
 
 type leveldbMap struct {

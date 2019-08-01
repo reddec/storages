@@ -2,8 +2,8 @@ package redistorage
 
 import (
 	"github.com/go-redis/redis"
-	"github.com/reddec/storages"
 	"os"
+	"reddec/storages"
 )
 
 type redisStorage struct {

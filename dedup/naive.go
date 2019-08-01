@@ -2,8 +2,8 @@ package dedup
 
 import (
 	"github.com/pkg/errors"
-	"github.com/reddec/storages"
 	"os"
+	"reddec/storages"
 	"sync"
 )
 

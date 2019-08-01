@@ -7,11 +7,11 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/reddec/chop-text"
-	"github.com/reddec/storages"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
+	"reddec/storages"
 	"strings"
 	"sync"
 )
@@ -110,7 +110,7 @@ func (ds *dirStorage) Keys(handler func(key []byte) error) error {
 
 func (ds *dirStorage) Close() error { return nil } // NOP
 
-func (ds *dirStorage) getTargetFile(key []byte) (string) {
+func (ds *dirStorage) getTargetFile(key []byte) string {
 	hash := hex.EncodeToString(ds.hash.New().Sum(key))
 	return path.Join(ds.location, ds.chopper.Chop(hash))
 }

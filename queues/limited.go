@@ -1,7 +1,7 @@
 package queues
 
 import (
-	"github.com/reddec/storages"
+	"reddec/storages"
 	"sync"
 )
 

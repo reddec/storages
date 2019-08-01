@@ -2,12 +2,12 @@ package tests
 
 import (
 	"github.com/pkg/errors"
-	"github.com/reddec/storages"
-	"github.com/reddec/storages/filestorage"
-	"github.com/reddec/storages/leveldbstorage"
-	"github.com/reddec/storages/memstorage"
-	"github.com/reddec/storages/redistorage"
 	"os"
+	"reddec/storages"
+	"reddec/storages/filestorage"
+	"reddec/storages/leveldbstorage"
+	"reddec/storages/memstorage"
+	"reddec/storages/redistorage"
 	"testing"
 )
 
