@@ -3,13 +3,13 @@ package main
 import (
 	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
+	"github.com/reddec/storages"
+	"github.com/reddec/storages/filestorage"
+	"github.com/reddec/storages/leveldbstorage"
+	"github.com/reddec/storages/redistorage"
 	"io/ioutil"
 	"log"
 	"os"
-	"storages"
-	"storages/filestorage"
-	"storages/leveldbstorage"
-	"storages/redistorage"
 )
 
 type source interface {

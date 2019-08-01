@@ -7,11 +7,11 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/reddec/chop-text"
+	"github.com/reddec/storages"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
-	"storages"
 	"strings"
 	"sync"
 )

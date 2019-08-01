@@ -1,4 +1,4 @@
-module storages
+module github.com/reddec/storages
 
 go 1.12
 
