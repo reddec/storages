@@ -1,9 +1,12 @@
 package tests
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/pkg/errors"
 	"os"
 	"reddec/storages"
+	"reddec/storages/awsstorage"
 	"reddec/storages/filestorage"
 	"reddec/storages/leveldbstorage"
 	"reddec/storages/memstorage"
@@ -38,17 +41,34 @@ func Test_Storages(t *testing.T) {
 	testDir = "../test/redis-storage"
 	stor = redistorage.MustNew("data", "redis://127.0.0.1")
 	testStorage(t, stor, testDir)
+
+	// AWS storage
+	TestAWS(t)
+}
+
+func TestAWS(t *testing.T) {
+	config := aws.NewConfig()
+	config.Credentials = credentials.NewEnvCredentials()
+	stor, err := awsstorage.New(os.Getenv("BUCKET"), config)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer stor.Close()
+	testStorage(t, stor, "")
 }
 
 func testStorage(t *testing.T, storage storages.Storage, testDir string) {
-	os.RemoveAll(testDir)
-	err := os.MkdirAll(testDir, 0755)
-	if err != nil {
-		t.Fatal("init test:", err)
+	if testDir != "" {
+		os.RemoveAll(testDir)
+		err := os.MkdirAll(testDir, 0755)
+		if err != nil {
+			t.Fatal("init test:", err)
+		}
 	}
 
 	// pre check
-	err = storage.Keys(func(key []byte) error {
+	err := storage.Keys(func(key []byte) error {
 		return errors.New("should be no keys on in empty dir")
 	})
 

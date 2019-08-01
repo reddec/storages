@@ -6,11 +6,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"os"
 	"reddec/storages"
+	"strings"
 )
 
-func New(bucket string, config aws.Config) (storages.Storage, error) {
-	s, err := session.NewSession(&config)
+func New(bucket string, config *aws.Config) (storages.Storage, error) {
+	s, err := session.NewSession(config)
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +52,9 @@ func (s *storage) Get(key []byte) ([]byte, error) {
 		Bucket: &s.bucket,
 		Key:    &sKey,
 	})
+	if err != nil && strings.Contains(err.Error(), s3.ErrCodeNoSuchKey) {
+		return nil, os.ErrNotExist
+	}
 	return buffer.Bytes(), err
 }
 
@@ -59,6 +64,9 @@ func (s *storage) Del(key []byte) error {
 		Bucket: &s.bucket,
 		Key:    &sKey,
 	})
+	if err != nil && strings.Contains(err.Error(), s3.ErrCodeNoSuchKey) {
+		return nil
+	}
 	return err
 }
 
