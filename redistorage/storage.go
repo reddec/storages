@@ -3,7 +3,7 @@ package redistorage
 import (
 	"github.com/go-redis/redis"
 	"os"
-	"storages"
+	"reddec/storages"
 )
 
 type redisStorage struct {

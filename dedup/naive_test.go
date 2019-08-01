@@ -1,8 +1,8 @@
 package dedup
 
 import (
-	"storages"
-	"storages/memstorage"
+	"reddec/storages"
+	"reddec/storages/memstorage"
 	"testing"
 )
 

@@ -2,9 +2,9 @@ package tests
 
 import (
 	"fmt"
-	"storages"
-	"storages/memstorage"
-	"storages/queues"
+	"reddec/storages"
+	"reddec/storages/memstorage"
+	"reddec/storages/queues"
 	"strconv"
 	"testing"
 )

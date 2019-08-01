@@ -5,12 +5,12 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/pkg/errors"
 	"os"
-	"storages"
-	"storages/awsstorage"
-	"storages/filestorage"
-	"storages/leveldbstorage"
-	"storages/memstorage"
-	"storages/redistorage"
+	"reddec/storages"
+	"reddec/storages/awsstorage"
+	"reddec/storages/filestorage"
+	"reddec/storages/leveldbstorage"
+	"reddec/storages/memstorage"
+	"reddec/storages/redistorage"
 	"testing"
 )
 

@@ -3,7 +3,7 @@ package queues
 import (
 	"math"
 	"os"
-	"storages"
+	"reddec/storages"
 	"strconv"
 	"sync"
 )

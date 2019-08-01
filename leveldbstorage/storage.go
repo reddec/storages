@@ -4,7 +4,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 	"os"
-	"storages"
+	"reddec/storages"
 )
 
 type leveldbMap struct {

@@ -11,7 +11,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"storages"
+	"reddec/storages"
 	"strings"
 	"sync"
 )

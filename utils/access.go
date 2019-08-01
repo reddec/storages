@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
-	"storages"
+	"reddec/storages"
 )
 
 // Put data to storage using default JSON encoder

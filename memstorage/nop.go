@@ -2,7 +2,7 @@ package memstorage
 
 import (
 	"os"
-	"storages"
+	"reddec/storages"
 )
 
 type nopStorage struct{}
