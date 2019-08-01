@@ -30,9 +30,14 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 
 import: `github.com/reddec/storages/filestorage`
 
+* `New`, `NewDefault`
+
 Puts each data to separate file. File name generates from hash function (by default SHA256) applied to key. To prevent
 generates too much files in one directory, each filename is chopped to 4 slices by 4 characters.
 
+* `NewFlat`
+
+Key is equal to file name. Sub-directories (`/` in key name) are not allowed.
 
 ### Level DB
 

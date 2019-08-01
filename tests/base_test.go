@@ -44,6 +44,14 @@ func Test_Storages(t *testing.T) {
 
 	// AWS storage
 	TestAWS(t)
+	// Flat files
+	TestFlat(t)
+}
+
+func TestFlat(t *testing.T) {
+	testDir := "../test/flat-file-storage"
+	stor := filestorage.NewFlat(testDir)
+	testStorage(t, stor, testDir)
 }
 
 func TestAWS(t *testing.T) {
