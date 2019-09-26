@@ -1,9 +1,12 @@
 package main
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/awsstorage"
 	"github.com/reddec/storages/filestorage"
 	"github.com/reddec/storages/leveldbstorage"
 	"github.com/reddec/storages/redistorage"
@@ -41,13 +44,30 @@ func (rd *redisParams) Build() (storages.Storage, error) {
 	return redistorage.New(rd.Namespace, rd.URL)
 }
 
+type awsParams struct {
+	Bucket         string `long:"bucket" env:"BUCKET" description:"S3 AWS bucket"`
+	Endpoint       string `long:"endpoint" env:"ENDPOINT" description:"Override AWS endpoint for AWS-capable services"`
+	ForcePathStyle bool   `long:"force-path-style" env:"FORCE_PATH_STYLE" description:"Force the request to use path-style addressing"`
+}
+
+func (ap *awsParams) Build() (storages.Storage, error) {
+	config := aws.NewConfig()
+	if ap.Endpoint != "" {
+		config = config.WithEndpoint(ap.Endpoint)
+	}
+	config.S3ForcePathStyle = &ap.ForcePathStyle
+	config.Credentials = credentials.NewEnvCredentials()
+	return awsstorage.New(ap.Bucket, config)
+}
+
 var config struct {
-	Db      string        `long:"db" env:"DB" description:"DB mode" default:"file" choice:"file" choice:"leveldb" choice:"redis"`
+	Db      string        `long:"db" short:"t" env:"DB" description:"DB mode" default:"file" choice:"file" choice:"leveldb" choice:"redis" choice:"s3"`
 	Stream  bool          `long:"stream" short:"s" env:"STREAM" description:"Use STDIN as source of value"`
 	Null    bool          `long:"null" short:"0" env:"NULL" description:"Use zero byte as terminator for list instead of new line"`
 	File    fileParams    `group:"File storage params" namespace:"file" env-namespace:"FILE"`
 	LevelDB levelDbParams `group:"LevelDB storage params" namespace:"leveldb" env-namespace:"LEVELDB"`
 	Redis   redisParams   `group:"Redis storage params" namespace:"redis" env-namespace:"REDIS"`
+	S3      awsParams     `group:"S3 storage" namespace:"s3" env-namespace:"S3"`
 	Args    struct {
 		Command string `description:"what to do (put, list, get, del)" choice:"get" choice:"put" choice:"list" choice:"ls" choice:"del" default:"list" required:"yes"`
 		Key     string `description:"key name" positional-arg-name:"key"`
@@ -69,6 +89,8 @@ func main() {
 		src = &config.LevelDB
 	case "redis":
 		src = &config.Redis
+	case "s3":
+		src = &config.S3
 	default:
 		panic("unknown db type: " + config.Db)
 	}
