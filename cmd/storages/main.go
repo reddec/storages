@@ -69,7 +69,7 @@ var config struct {
 	Redis   redisParams   `group:"Redis storage params" namespace:"redis" env-namespace:"REDIS"`
 	S3      awsParams     `group:"S3 storage" namespace:"s3" env-namespace:"S3"`
 	Args    struct {
-		Command string `description:"what to do (put, list, get, del)" choice:"get" choice:"put" choice:"list" choice:"ls" choice:"del" default:"list" required:"yes"`
+		Command string `description:"what to do (put/set, list, get, del)" choice:"get" choice:"put" choice:"set" choice:"list" choice:"ls" choice:"del" default:"list" required:"yes"`
 		Key     string `description:"key name" positional-arg-name:"key"`
 		Value   string `description:"Value to put if stream flag is not enabled"`
 	} `positional-args:"yes"`
