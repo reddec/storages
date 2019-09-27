@@ -126,14 +126,14 @@ func generate(dirName, typeName string, pkgName string) (*jen.File, error) {
 
 	file.Line()
 	file.Comment("Keys copied slice that cached in hot storage")
-	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Keys").Params().Index().String().BlockFunc(func(fn *jen.Group) {
+	file.Func().Parens(jen.Id("cs").Op("*").Id(stName)).Id("Keys").Params().Params(jen.Index().String(), jen.Error()).BlockFunc(func(fn *jen.Group) {
 		fn.Id("cs").Dot("lock").Dot("RLock").Call()
 		fn.Defer().Id("cs").Dot("lock").Dot("RUnlock").Call()
 		fn.Var().Id("ans").Op("=").Make(jen.Index().String(), jen.Lit(0), jen.Len(jen.Id("cs").Dot("hot")))
 		fn.For(jen.Id("key").Op(":=").Range().Id("cs").Dot("hot")).BlockFunc(func(group *jen.Group) {
 			group.Id("ans").Op("=").Append(jen.Id("ans"), jen.Id("key"))
 		})
-		fn.Return(jen.Id("ans"))
+		fn.Return(jen.Id("ans"), jen.Nil())
 	})
 
 	file.Line()
