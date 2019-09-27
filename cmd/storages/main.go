@@ -21,9 +21,13 @@ type source interface {
 
 type fileParams struct {
 	Location string `long:"location" env:"LOCATION" description:"Root dir to store data" default:"./db"`
+	Flat     bool   `long:"flat" env:"FLAT" description:"Use flat file organization: key name is equal to file (prone to invalid key names)"`
 }
 
 func (fp *fileParams) Build() (storages.Storage, error) {
+	if fp.Flat {
+		return filestorage.NewFlat(fp.Location), nil
+	}
 	return filestorage.NewDefault(fp.Location), nil
 }
 
