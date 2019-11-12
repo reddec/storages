@@ -13,8 +13,8 @@ type ShardPool interface {
 	io.Closer
 }
 
-// New sharded storage with defined pool (strategy)
-func NewSharded(pool ShardPool) Storage {
+// Sharded storage with defined pool (strategy)
+func Sharded(pool ShardPool) Storage {
 	return &shardedStorage{pool: pool}
 }
 
