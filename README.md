@@ -1,5 +1,10 @@
 # Collection of storages (and wrappers)
 
+[![license](https://img.shields.io/github/license/reddec/storages.svg)](https://github.com/reddec/storages)
+[![](https://godoc.org/github.com/reddec/storages?status.svg)](http://godoc.org/github.com/reddec/storages)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4UKBSN5HVB3Y8&source=url)
+
+
 Different implementations of storages with same abstract interface:
 
 
