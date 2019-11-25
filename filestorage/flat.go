@@ -35,7 +35,7 @@ func (ds *flatStorage) Namespace(name []byte) (storages.Storage, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewFlat(dirName), nil
+	return NewFlat(subLocation), nil
 }
 
 func (ds *flatStorage) Put(key []byte, data []byte) error {
@@ -109,11 +109,12 @@ func (ds *flatStorage) Namespaces(handler func(name []byte) error) error {
 	if err != nil {
 		return errors.Wrap(err, "create dir")
 	}
-	return filepath.Walk(ds.namespacePath(""), func(path string, info os.FileInfo, err error) error {
+	root := ds.namespacePath("")
+	return filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() {
+		if !info.IsDir() || path == root {
 			return nil
 		}
 		return handler([]byte(filepath.Base(path)))

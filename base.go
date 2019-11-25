@@ -83,3 +83,29 @@ func AllKeysString(storage Storage) ([]string, error) {
 	})
 	return ans, err
 }
+
+// Extract all namespaces from storage as-is
+func AllNamespaces(storage NamespacedStorage) ([][]byte, error) {
+	if storage == nil {
+		return nil, nil
+	}
+	var ans [][]byte
+	err := storage.Namespaces(func(key []byte) error {
+		ans = append(ans, key)
+		return nil
+	})
+	return ans, err
+}
+
+// Extract all namespaces from storage as string
+func AllNamespacesString(storage NamespacedStorage) ([]string, error) {
+	if storage == nil {
+		return nil, nil
+	}
+	var ans []string
+	err := storage.Namespaces(func(key []byte) error {
+		ans = append(ans, string(key))
+		return nil
+	})
+	return ans, err
+}
