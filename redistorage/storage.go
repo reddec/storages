@@ -9,12 +9,18 @@ import (
 type redisStorage struct {
 	client *redis.Client
 	key    string
+	nested bool
+}
+
+func (rs *redisStorage) DelNamespace(name []byte) error {
+	return rs.client.Del(string(name)).Err()
 }
 
 func (rs *redisStorage) Namespace(name []byte) (storages.Storage, error) {
 	return &redisStorage{
 		client: rs.client,
 		key:    string(name),
+		nested: true,
 	}, nil
 }
 
@@ -69,10 +75,15 @@ func (rs *redisStorage) Keys(handler func(key []byte) error) error {
 	return nil
 }
 
-func (rs *redisStorage) Close() error { return rs.client.Close() }
+func (rs *redisStorage) Close() error {
+	if rs.nested {
+		return nil
+	}
+	return rs.client.Close()
+}
 
 // New storage wrapper around REDIS hashmap. Namespace is a hashkey
-func NewClient(namespace string, client *redis.Client) storages.NamespacedStorage {
+func NewClient(namespace string, client *redis.Client) *redisStorage {
 	return &redisStorage{
 		key:    namespace,
 		client: client,
@@ -80,7 +91,7 @@ func NewClient(namespace string, client *redis.Client) storages.NamespacedStorag
 }
 
 // New REDIS client and storage wrapper
-func New(namespace string, url string) (storages.NamespacedStorage, error) {
+func New(namespace string, url string) (*redisStorage, error) {
 	params, err := redis.ParseURL(url)
 	if err != nil {
 		return nil, err

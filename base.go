@@ -56,6 +56,8 @@ type NamespacedStorage interface {
 	Namespace(name []byte) (Storage, error)
 	// Iterate over all namespaces in storage (not including nested)
 	Namespaces(handler func(name []byte) error) error
+	// Delete nested namespace by name. If namespace still in usage - result undefined
+	DelNamespace(name []byte) error
 }
 
 // Extract all keys from storage as-is

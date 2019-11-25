@@ -25,6 +25,14 @@ type flatStorage struct {
 	lock     sync.RWMutex
 }
 
+func (ds *flatStorage) DelNamespace(name []byte) error {
+	dirName := string(name)
+	if strings.ContainsRune(dirName, os.PathSeparator) {
+		return errors.New(errWithPathSeparator)
+	}
+	return os.RemoveAll(ds.namespacePath(dirName))
+}
+
 func (ds *flatStorage) Namespace(name []byte) (storages.Storage, error) {
 	dirName := string(name)
 	if strings.ContainsRune(dirName, os.PathSeparator) {

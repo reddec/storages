@@ -31,6 +31,12 @@ type boltDB struct {
 	nested bool
 }
 
+func (bdb *boltDB) DelNamespace(name []byte) error {
+	return bdb.db.Update(func(tx *bbolt.Tx) error {
+		return tx.DeleteBucket(name)
+	})
+}
+
 func (bdb *boltDB) Put(key []byte, data []byte) error {
 	return bdb.db.Update(func(tx *bbolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(bdb.bucket)

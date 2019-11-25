@@ -54,6 +54,7 @@ func Test_Storages(t *testing.T) {
 	// redis storage (REDIS should be installed and started on default port)
 	testDir = "../test/redis-storage"
 	stor = redistorage.MustNew("data", "redis://127.0.0.1")
+	testShouldBeNS(t, stor)
 	testStorage(t, stor, testDir, true)
 
 	// AWS storage
@@ -72,12 +73,14 @@ func TestBolt(t *testing.T) {
 		return
 	}
 	defer stor.Close()
+	testShouldBeNS(t, stor)
 	testStorage(t, stor, "", true)
 }
 
 func TestFlat(t *testing.T) {
 	testDir := "../test/flat-file-storage"
 	stor := filestorage.NewFlat(testDir)
+	testShouldBeNS(t, stor)
 	testStorage(t, stor, testDir, true)
 }
 
@@ -91,6 +94,12 @@ func TestAWS(t *testing.T) {
 	}
 	defer stor.Close()
 	testStorage(t, stor, "", true)
+}
+
+func testShouldBeNS(t *testing.T, storage storages.Storage) {
+	if _, ok := storage.(storages.NamespacedStorage); !ok {
+		t.Errorf("%v should be namespaced storage", reflect.ValueOf(storage).Elem().Type().Name())
+	}
 }
 
 func testStorage(t *testing.T, storage storages.Storage, testDir string, testNested bool) {
@@ -232,6 +241,28 @@ func testNamespaces(storage storages.NamespacedStorage, t *testing.T, testNested
 	}
 	if !found {
 		t.Error("created namespace not found")
+		return
+	}
+	err = storage.DelNamespace([]byte("test1"))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	// check removed namespace
+	list, err = storages.AllNamespacesString(storage)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	found = false
+	for _, k := range list {
+		if k == "test1" {
+			found = true
+			break
+		}
+	}
+	if found {
+		t.Error("removed namespace still exists")
 		return
 	}
 }
