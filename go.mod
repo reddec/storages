@@ -14,4 +14,5 @@ require (
 	github.com/reddec/symbols v0.0.0-20190919092947-1295d18aa763
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0
+	go.etcd.io/bbolt v1.3.3
 )

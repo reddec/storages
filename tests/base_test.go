@@ -6,11 +6,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/reddec/storages"
 	"github.com/reddec/storages/awsstorage"
+	"github.com/reddec/storages/boltdb"
 	"github.com/reddec/storages/filestorage"
 	"github.com/reddec/storages/leveldbstorage"
 	"github.com/reddec/storages/memstorage"
 	"github.com/reddec/storages/redistorage"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -18,6 +20,18 @@ func Test_Storages(t *testing.T) {
 	var testDir string
 	var stor storages.Storage
 	var err error
+
+	err = os.RemoveAll("../test")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = os.MkdirAll("../test", 0755)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	// file storage
 	testDir = "../test/file-storage"
@@ -43,9 +57,22 @@ func Test_Storages(t *testing.T) {
 	testStorage(t, stor, testDir, true)
 
 	// AWS storage
-	TestAWS(t)
+	//TestAWS(t)
 	// Flat files
 	TestFlat(t)
+	// Test bolt
+	TestBolt(t)
+}
+
+func TestBolt(t *testing.T) {
+	testFile := "../test/boltd.db"
+	stor, err := boltdb.NewDefault(testFile)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer stor.Close()
+	testStorage(t, stor, "", true)
 }
 
 func TestFlat(t *testing.T) {
@@ -74,6 +101,7 @@ func testStorage(t *testing.T, storage storages.Storage, testDir string, testNes
 			t.Fatal("init test:", err)
 		}
 	}
+	t.Log("Testing", reflect.ValueOf(storage).Elem().Type().Name())
 
 	// pre check
 	err := storage.Keys(func(key []byte) error {
@@ -165,8 +193,8 @@ func testStorage(t *testing.T, storage storages.Storage, testDir string, testNes
 
 func testNamespaces(storage storages.NamespacedStorage, t *testing.T, testNested bool) {
 	err := storage.Namespaces(func(name []byte) error {
-		t.Log(string(name))
-		return errors.New("already exists namespace in empty storage")
+		t.Log("warning! Already exists namespace in empty storage:", string(name))
+		return nil
 	})
 	if err != nil {
 		t.Error(err)
@@ -181,6 +209,11 @@ func testNamespaces(storage storages.NamespacedStorage, t *testing.T, testNested
 	if testNested {
 		testStorage(t, ns, "", false)
 	}
+	err = ns.Put([]byte("A"), []byte("B"))
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	list, err := storages.AllNamespacesString(storage)
 	if err != nil {
 		t.Error(err)
@@ -190,8 +223,15 @@ func testNamespaces(storage storages.NamespacedStorage, t *testing.T, testNested
 		t.Error("no ns created")
 		return
 	}
-	if list[0] != "test1" {
-		t.Error("broken namespace created:", list[0])
+	var found bool
+	for _, k := range list {
+		if k == "test1" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("created namespace not found")
 		return
 	}
 }

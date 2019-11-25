@@ -4,6 +4,11 @@
 [![](https://godoc.org/github.com/reddec/storages?status.svg)](http://godoc.org/github.com/reddec/storages)
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4UKBSN5HVB3Y8&source=url)
 
+Donating always welcome
+
+* ETH: `0xA4eD4fB5805a023816C9B55C52Ae056898b6BdBC`
+* BTC: `bc1qlj4v32rg8w0sgmtk8634uc36evj6jn3d5drnqy`
+
 
 Different implementations of storages with same abstract interface:
 
@@ -28,6 +33,14 @@ type Storage interface {
 
 The wrappers itself licensed under MIT but used libraries may have different license politics.
 
+# Coding style
+
+* V0 - return abstract interfaces
+* V1 - follow 'accept interfaces, return structs'
+
+Since V1 all implementations should return non-exported reference to structure (see `boltdb` wrapper as an example). Standard wrappers will be replace as sooner as possible, 
+however it should not affect code that already using current library.
+
 ## Collection
 
 
@@ -49,6 +62,12 @@ Key is equal to file name. Sub-directories (`/` in key name) are not allowed.
 import: `github.com/reddec/storages/leveldbstorage`
 
 Generates LevelDB storage (github.com/syndtr/goleveldb) and stores all item as-is inside DB
+
+### BBolt DB
+
+import: `github.com/reddec/storages/boltdb`
+
+Generates BoltDB (etc.d fork called bbolt) storage
 
 ### Memory DB
 
