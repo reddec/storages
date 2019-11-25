@@ -30,7 +30,7 @@ func (ds *flatStorage) DelNamespace(name []byte) error {
 	if strings.ContainsRune(dirName, os.PathSeparator) {
 		return errors.New(errWithPathSeparator)
 	}
-	return os.RemoveAll(ds.namespacePath(dirName))
+	return os.RemoveAll(filepath.Join(ds.location, dirName))
 }
 
 func (ds *flatStorage) Namespace(name []byte) (storages.Storage, error) {
@@ -38,7 +38,7 @@ func (ds *flatStorage) Namespace(name []byte) (storages.Storage, error) {
 	if strings.ContainsRune(dirName, os.PathSeparator) {
 		return nil, errors.New(errWithPathSeparator)
 	}
-	subLocation := ds.namespacePath(dirName)
+	subLocation := filepath.Join(ds.location, dirName)
 	err := os.MkdirAll(subLocation, 0755)
 	if err != nil {
 		return nil, err
@@ -95,11 +95,11 @@ func (ds *flatStorage) Del(key []byte) error {
 func (ds *flatStorage) Keys(handler func(key []byte) error) error {
 	ds.lock.RLock()
 	defer ds.lock.RUnlock()
-	err := os.MkdirAll(ds.fileNamePath(""), filePermission)
+	err := os.MkdirAll(ds.location, filePermission)
 	if err != nil {
 		return errors.Wrap(err, "create dir")
 	}
-	return filepath.Walk(ds.fileNamePath(""), func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(ds.location, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -113,16 +113,11 @@ func (ds *flatStorage) Keys(handler func(key []byte) error) error {
 func (ds *flatStorage) Namespaces(handler func(name []byte) error) error {
 	ds.lock.RLock()
 	defer ds.lock.RUnlock()
-	err := os.MkdirAll(ds.namespacePath(""), filePermission)
-	if err != nil {
-		return errors.Wrap(err, "create dir")
-	}
-	root := ds.namespacePath("")
-	return filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(ds.location, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() || path == root {
+		if !info.IsDir() || path == ds.location {
 			return nil
 		}
 		return handler([]byte(filepath.Base(path)))
@@ -132,8 +127,5 @@ func (ds *flatStorage) Namespaces(handler func(name []byte) error) error {
 func (ds *flatStorage) Close() error { return nil } // NOP
 
 func (ds *flatStorage) fileNamePath(name string) string {
-	return filepath.Join(ds.location, "data", name)
-}
-func (ds *flatStorage) namespacePath(name string) string {
-	return filepath.Join(ds.location, "namespace", name)
+	return filepath.Join(ds.location, name)
 }

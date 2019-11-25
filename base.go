@@ -49,7 +49,7 @@ type BatchedStorage interface {
 }
 
 // Nested storage with namespace support (implementation defined).
-// Namespaces and regular values are living in a different key-space, so they may have same name.
+// Namespaces and regular values may live in a same key-space.
 type NamespacedStorage interface {
 	Storage
 	// Get or create nested storage. Optionally can be also NamespacedStorage but it is implementation defined

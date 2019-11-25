@@ -59,6 +59,8 @@ generates too much files in one directory, each filename is chopped to 4 slices 
 
 Key is equal to file name. Sub-directories (`/` in key name) are not allowed.
 
+Namespace are share key space with regular values.
+
 ### Level DB
 
 import: `github.com/reddec/storages/leveldbstorage`
