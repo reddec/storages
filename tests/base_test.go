@@ -46,11 +46,7 @@ func Test_Storages(t *testing.T) {
 	}
 	testStorage(t, stor, testDir, true)
 
-	// memory storage
-	testDir = "../test/memory-storage"
-	stor = memstorage.New()
-	testStorage(t, stor, testDir, true)
-
+	TestMemory(t)
 	// redis storage (REDIS should be installed and started on default port)
 	testDir = "../test/redis-storage"
 	stor = redistorage.MustNew("data", "redis://127.0.0.1")
@@ -75,6 +71,14 @@ func TestBolt(t *testing.T) {
 	defer stor.Close()
 	testShouldBeNS(t, stor)
 	testStorage(t, stor, "", true)
+}
+
+func TestMemory(t *testing.T) {
+	// memory storage
+	testDir := "../test/memory-storage"
+	stor := memstorage.New()
+	testShouldBeNS(t, stor)
+	testStorage(t, stor, testDir, true)
 }
 
 func TestFlat(t *testing.T) {

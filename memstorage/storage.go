@@ -7,8 +7,31 @@ import (
 )
 
 type memoryMap struct {
-	db   map[string][]byte
-	lock sync.RWMutex
+	namespaces sync.Map
+	db         map[string][]byte
+	lock       sync.RWMutex
+}
+
+func (bdp *memoryMap) Namespace(name []byte) (storages.Storage, error) {
+	val, _ := bdp.namespaces.LoadOrStore(string(name), &memoryMap{})
+	return val.(*memoryMap), nil
+}
+
+func (bdp *memoryMap) Namespaces(handler func(name []byte) error) error {
+	var err error
+	bdp.namespaces.Range(func(key, value interface{}) bool {
+		err = handler([]byte(key.(string)))
+		if err != nil {
+			return false
+		}
+		return true
+	})
+	return err
+}
+
+func (bdp *memoryMap) DelNamespace(name []byte) error {
+	bdp.namespaces.Delete(string(name))
+	return nil
 }
 
 func (bdp *memoryMap) Put(key []byte, value []byte) error {
@@ -57,7 +80,7 @@ func (bdp *memoryMap) Keys(handler func(key []byte) error) error {
 	return nil
 }
 
-func (ds *memoryMap) Close() error { return nil } // NOP
+func (bdp *memoryMap) Close() error { return nil } // NOP
 
 type memBatch struct {
 	data map[string][]byte
@@ -84,11 +107,11 @@ func (mb *memBatch) Close() error {
 	return nil
 }
 
-func (ds *memoryMap) BatchWriter() storages.Writer {
-	return &memBatch{data: make(map[string][]byte), mm: ds}
+func (bdp *memoryMap) BatchWriter() storages.Writer {
+	return &memBatch{data: make(map[string][]byte), mm: bdp}
 }
 
 // New in-memory storage, based on Go concurrent map. For each Add and Get new copy of key and data will be made.
-func New() storages.BatchedStorage {
+func New() *memoryMap {
 	return &memoryMap{}
 }
