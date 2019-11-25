@@ -48,6 +48,16 @@ type BatchedStorage interface {
 	BatchWriter() Writer
 }
 
+// Nested storage with namespace support (implementation defined).
+// Namespaces and regular values are living in a different key-space, so they may have same name.
+type NamespacedStorage interface {
+	Storage
+	// Get or create nested storage. Optionally can be also NamespacedStorage but it is implementation defined
+	Namespace(name []byte) (Storage, error)
+	// Iterate over all namespaces in storage (not including nested)
+	Namespaces(handler func(name []byte) error) error
+}
+
 // Extract all keys from storage as-is
 func AllKeys(storage Storage) ([][]byte, error) {
 	if storage == nil {
