@@ -55,6 +55,8 @@ generates too much files in one directory, each filename is chopped to 4 slices 
 
 * `NewFlat`
 
+![dd](https://badgen.net/badge/features/NS/green?list=|)
+
 Key is equal to file name. Sub-directories (`/` in key name) are not allowed.
 
 ### Level DB
@@ -64,6 +66,8 @@ import: `github.com/reddec/storages/leveldbstorage`
 Generates LevelDB storage (github.com/syndtr/goleveldb) and stores all item as-is inside DB
 
 ### BBolt DB
+
+![dd](https://badgen.net/badge/features/NS/green?list=|)
 
 import: `github.com/reddec/storages/boltdb`
 
@@ -85,9 +89,11 @@ Useful for mocking, performance testing or for any other logic that needs discar
 
 ### Redis
 
+![dd](https://badgen.net/badge/features/NS/green?list=|)
+
 import: `github.com/reddec/storages/redistorage`
 
-Wrapper around Redis hasmap where one storage is one hashmap.
+Wrapper around Redis hashmap where one storage is one hashmap.
 
 ### S3
 
