@@ -9,7 +9,9 @@ Generates BoltDB (etc.d fork called bbolt) storage.
 
 Default bucket name is `DEFAULT`. 
 
-Uses buckets as namespaces.
+Uses buckets as namespaces. Closing root (parent) storage will close all namespaced storages but not vice-versa.
+
+
 
 ## Features
 
