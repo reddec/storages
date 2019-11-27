@@ -1,7 +1,23 @@
-### Memory DB
+# Memory DB
 
-![features](https://badgen.net/badge/features/NS/green?list=|)
+[![API docs](https://godoc.org/github.com/reddec/storages/memstorage?status.svg)](http://godoc.org/github.com/reddec/storages/memstorage)
 
-import: `github.com/reddec/storages/memstorage`
+* **import:**  `github.com/reddec/storages/memstorage`
 
-Based on hashmap and RWLock in-memory storage
+Based on hashmap and RWLock in-memory storage. Values and keys are copied before put
+
+For namespaces used Go `sync.Map`.
+
+## Features
+
+{% include feature_namespace.md %}
+
+### Batch writing
+
+## Usage
+
+```go
+storage := New()
+```
+
+`Close()` is not required, however it is implemented as NOP.
