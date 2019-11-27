@@ -11,6 +11,8 @@ import (
 	"github.com/reddec/storages/leveldbstorage"
 	"github.com/reddec/storages/memstorage"
 	"github.com/reddec/storages/redistorage"
+	"github.com/reddec/storages/sharded"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"reflect"
 	"testing"
@@ -59,6 +61,39 @@ func Test_Storages(t *testing.T) {
 	TestFlat(t)
 	// Test bolt
 	TestBolt(t)
+}
+
+func TestShard(t *testing.T) {
+	var used []storages.Storage
+	pool := sharded.NewHashed(3, func(shardID uint32) (storage storages.Storage, e error) {
+		mem := memstorage.New()
+		used = append(used, mem)
+		return mem, nil
+	})
+
+	shard := storages.Sharded(pool)
+
+	testStorage(t, shard, "", true)
+
+	if err := shard.Put([]byte("alice"), []byte("1")); err != nil {
+		t.Error(err)
+		return
+	}
+	if err := shard.Put([]byte("bob1"), []byte("1")); err != nil {
+		t.Error(err)
+		return
+	}
+	if err := shard.Put([]byte("carly"), []byte("1")); err != nil {
+		t.Error(err)
+		return
+	}
+	first, _ := storages.AllKeysString(used[0])
+	second, _ := storages.AllKeysString(used[1])
+	third, _ := storages.AllKeysString(used[2])
+	assert.Len(t, first, 1)
+	assert.Len(t, second, 1)
+	assert.Len(t, third, 1)
+	t.Logf("1st: %+v, 2nd: %+v, 3d: %+v", first, second, third)
 }
 
 func TestBolt(t *testing.T) {

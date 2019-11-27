@@ -12,7 +12,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/reddec/chop-text v0.0.0-20170808164554-6118a9210e96
 	github.com/reddec/symbols v0.0.0-20190919092947-1295d18aa763
-	github.com/stretchr/testify v1.3.0 // indirect
+	github.com/stretchr/testify v1.3.0
 	github.com/syndtr/goleveldb v1.0.0
 	go.etcd.io/bbolt v1.3.3
 )
