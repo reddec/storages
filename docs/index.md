@@ -41,69 +41,7 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 Since V1 all implementations should return non-exported reference to structure (see `boltdb` wrapper as an example). Standard wrappers will be replace as sooner as possible, 
 however it should not affect code that already using current library.
 
-## Collection
 
-
-### File storage
-
-import: `github.com/reddec/storages/filestorage`
-
-* `New`, `NewDefault`
-
-Puts each data to separate file. File name generates from hash function (by default SHA256) applied to key. To prevent
-generates too much files in one directory, each filename is chopped to 4 slices by 4 characters.
-
-* `NewFlat`
-
-![features](https://badgen.net/badge/features/NS/green?list=|)
-
-Key is equal to file name. Sub-directories (`/` in key name) are not allowed.
-
-Namespace are share key space with regular values.
-
-### Level DB
-
-import: `github.com/reddec/storages/leveldbstorage`
-
-Generates LevelDB storage (github.com/syndtr/goleveldb) and stores all item as-is inside DB
-
-### BBolt DB
-
-![features](https://badgen.net/badge/features/NS/green?list=|)
-
-import: `github.com/reddec/storages/boltdb`
-
-Generates BoltDB (etc.d fork called bbolt) storage
-
-### Memory DB
-
-![features](https://badgen.net/badge/features/NS/green?list=|)
-
-import: `github.com/reddec/storages/memstorage`
-
-Based on hashmap and RWLock in-memory storage
-
-### NOP
-
-import: `github.com/reddec/storages/memstorage`
-
-No-Operation storage that drops any content and returns not-exists on any request.
-
-Useful for mocking, performance testing or for any other logic that needs discard storage.
-
-### Redis
-
-![features](https://badgen.net/badge/features/NS/green?list=|)
-
-import: `github.com/reddec/storages/redistorage`
-
-Wrapper around Redis hashmap where one storage is one hashmap.
-
-### S3
-
-import: `github.com/reddec/storages/awsstorage`
-
-Wrapper around official S3 SDK to work with bucket as a map 
 
 # Queues
 
