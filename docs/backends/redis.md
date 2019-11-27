@@ -15,7 +15,7 @@ Closing root (parent) storage will close all namespaced storages but not vice-ve
 
 {% include feature_namespace.md %}
 
-## Examples
+## Usage
 
 **With new connection**
 
