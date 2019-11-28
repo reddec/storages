@@ -1,11 +1,11 @@
 ---
 backend: "Mock"
+package: "memstorage"
 headline: "Mocking storage that do nothing"
 features: ["batch_writer"]
+project_url: ""
 ---
-### NOP
-
-import: `github.com/reddec/storages/memstorage`
+{% include backend_head.md page=page %}
 
 No-Operation storage that drops any content and returns not-exists on any request.
 
@@ -13,8 +13,13 @@ Useful for mocking, performance testing or for any other logic that needs discar
 
 ## Usage
 
-## Features
+**Example**
 
-{% for feature in page.features%}
-{% include feature_{{feature}}.md %}
-{% endfor %}
+```go
+stor := NewNOP()
+// no need to call Close()
+```
+
+
+{% include backend_tail.md page=page %}
+

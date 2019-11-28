@@ -1,14 +1,11 @@
 ---
 backend: "Redis"
+package: "redistorage"
 headline: "Redis hashmap as a storage"
 features: ["namespace"]
+project_url: "https://github.com/go-redis/redis"
 ---
-# Redis
-
-[![API docs](https://godoc.org/github.com/reddec/storages/redistorage?status.svg)](http://godoc.org/github.com/reddec/storages/redistorage)
-
-* **import:** `github.com/reddec/storages/redistorage`
-* [Redis project](https://github.com/go-redis/redis) 
+{% include backend_head.md page=page %}
 
 Wrapper around Redis hashmap where one storage is one hashmap.
 
@@ -43,9 +40,4 @@ storage := NewClient("my-space", redisConnection)
 defer storage.Close()
 ```
 
-## Features
-
-{% for feature in page.features%}
-{% include feature_{{feature}}.md %}
-{% endfor %}
-
+{% include backend_tail.md page=page %}

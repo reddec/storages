@@ -1,13 +1,11 @@
 ---
 backend: "In-Memory"
+package: "memstorage"
 headline: "HashMap-based in-memory storage"
 features: ["batch_writer", "namespace"]
+project_url: ""
 ---
-# Memory DB
-
-[![API docs](https://godoc.org/github.com/reddec/storages/memstorage?status.svg)](http://godoc.org/github.com/reddec/storages/memstorage)
-
-* **import:**  `github.com/reddec/storages/memstorage`
+{% include backend_head.md page=page %}
 
 Based on hashmap and RWLock in-memory storage. Values and keys are copied before put
 
@@ -16,13 +14,9 @@ For namespaces used Go `sync.Map`.
 ## Usage
 
 ```go
-storage := New()
+storage := memstorage.New()
 ```
 
 `Close()` is not required, however it is implemented as NOP.
 
-## Features
-
-{% for feature in page.features%}
-{% include feature_{{feature}}.md %}
-{% endfor %}
+{% include backend_tail.md page=page %}

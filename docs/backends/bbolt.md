@@ -1,14 +1,11 @@
 ---
 backend: "BBolt"
+package: "boltdb"
 headline: "Single-file, embeddable, pure-Go storage"
 features: ["namespace"]
+project_url: "https://github.com/etcd-io/bbolt"
 ---
-# BBolt DB
-
-[![API docs](https://godoc.org/github.com/reddec/storages/boltdb?status.svg)](http://godoc.org/github.com/reddec/storages/boltdb)
-
-* **import:** `github.com/reddec/storages/boltdb`
-* [BBolt project](https://github.com/etcd-io/bbolt)
+{% include backend_head.md page=page %}
 
 Generates BoltDB (etc.d fork called bbolt) storage.
 
@@ -39,8 +36,4 @@ if err != nil {
 defer storage.Close()
 ```
 
-## Features
-
-{% for feature in page.features %}
-{% include feature_{{feature}}.md %}
-{% endfor %}
+{% include backend_tail.md page=page %}
