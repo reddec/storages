@@ -45,6 +45,12 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 * [Files](./backends/filestorage.md)
 * [S3](./backends/s3.md)
 
+{% for page in site.pages %}
+{% if page.dir contains "/backends/" %}
+* {{page.url | relative_url}}
+{% endif %}
+{% endfor %}
+
 # Derived 
 
 * [deduplication](./derived/dedup)
