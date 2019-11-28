@@ -49,6 +49,7 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 
 * [deduplication](./derived/dedup)
 * [queues](./derived/queues)
+* [indexes](./derived/indexes)
 
 # CLI 
 
