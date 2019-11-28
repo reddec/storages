@@ -5,7 +5,7 @@ Support [BatchedStorage](https://godoc.org/github.com/reddec/storages#BatchedSto
 It allows to cache `Put` operations and execute them in one batch. 
 In general case it may increase write throughput.
 
-Batch implements [Writer](https://godoc.org/github.com/reddec/storages#Writer)interface.
+Batch implements [Writer](https://godoc.org/github.com/reddec/storages#Writer) interface.
 
 **Example:**
   

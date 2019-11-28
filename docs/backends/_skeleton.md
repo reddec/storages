@@ -5,12 +5,7 @@ package: ""
 features: []
 project_url: ""
 ---
-# {{page.backend}}
-
-[![API docs](https://godoc.org/github.com/reddec/storages/{{page.package}}?status.svg)](http://godoc.org/github.com/reddec/storages/{{page.package}})
-
-* **import:** `github.com/reddec/storages/{{page.package}}`
-* [{{page.backend}} project]({{page.project_url}})
+{% include backend_head.md page=page %}
 
 DESCRIPTION
 
