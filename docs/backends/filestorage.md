@@ -8,12 +8,17 @@ project_url: ""
 
 {% include backend_head.md page=page %}
 
-* `New`, `NewDefault`
+### Encoded 
+
+Constructors: `New`, `NewDefault`
 
 Puts each data to separate file. File name generates from hash function (by default SHA256) applied to key. To prevent
 generates too much files in one directory, each filename is chopped to 4 slices by 4 characters.
 
-* `NewFlat`
+
+### Flat
+
+Constructor: `NewFlat`
 
 Key is equal to file name. Sub-directories (`/` in key name) are not allowed.
 
