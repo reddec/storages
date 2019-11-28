@@ -15,6 +15,6 @@ Useful for mocking, performance testing or for any other logic that needs discar
 
 ## Features
 
-{% for feature in features %}
+{% for feature in page.features%}
 {% include feature_{{feature}}.md %}
 {% endfor %}

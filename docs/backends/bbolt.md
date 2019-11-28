@@ -41,6 +41,6 @@ defer storage.Close()
 
 ## Features
 
-{% for feature in features %}
+{% for feature in page.features %}
 {% include feature_{{feature}}.md %}
 {% endfor %}

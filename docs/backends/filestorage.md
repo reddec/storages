@@ -22,7 +22,7 @@ Namespace are share key space with regular values.
 
 ## Features
 
-{% for feature in features %}
+{% for feature in page.features%}
 {% include feature_{{feature}}.md %}
 {% endfor %}
 

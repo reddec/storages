@@ -5,12 +5,12 @@ package: ""
 features: []
 project_url: ""
 ---
-# {{backend}}
+# {{page.backend}}
 
-[![API docs](https://godoc.org/github.com/reddec/storages/{{package}}?status.svg)](http://godoc.org/github.com/reddec/storages/{{package}})
+[![API docs](https://godoc.org/github.com/reddec/storages/{{page.package}}?status.svg)](http://godoc.org/github.com/reddec/storages/{{page.package}})
 
-* **import:** `github.com/reddec/storages/{{package}}`
-* [{{backend}} project]({{project_url}})
+* **import:** `github.com/reddec/storages/{{page.package}}`
+* [{{page.backend}} project]({{page.project_url}})
 
 DESCRIPTION
 
@@ -26,6 +26,6 @@ DESCRIPTION
 
 ## Features
 
-{% for feature in features %}
+{% for feature in page.features%}
 {% include feature_{{feature}}.md %}
 {% endfor %}
