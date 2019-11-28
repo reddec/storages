@@ -1,6 +1,6 @@
 # Sharding
 
-Sharding is a process to distributed data through multiple storages. 
+Sharding is a process to distribute data through multiple storages. 
 
                   storage1 (data from 0..x)
                 🡕

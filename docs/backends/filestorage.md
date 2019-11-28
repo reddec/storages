@@ -29,10 +29,7 @@ Namespace are share key space with regular values.
 **Flat**
 
 ```go
-stor, err = filestorage.NewFlat("path/to/directory")
-if err != nil {
-    panic(err)
-}
+stor := filestorage.NewFlat("path/to/directory")
 // Close() not required but implemented as NOP
 ```
 
@@ -40,10 +37,7 @@ if err != nil {
 **Encoded**
 
 ```go
-stor, err = filestorage.NewDefault("path/to/directory")
-if err != nil {
-    panic(err)
-}
+stor := filestorage.NewDefault("path/to/directory")
 // Close() not required but implemented as NOP
 ```
 

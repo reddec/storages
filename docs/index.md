@@ -27,13 +27,50 @@ type Storage interface {
 }
 ```
 
-# License
 
-The wrappers itself licensed under MIT but used libraries may have different license politics.
+## Example usage
 
-# Code conventions and agreements
+**static backend**
 
-* [code and interface style](./convention/coding)
+```go
+func run() {
+	storage :=  memstorage.New()
+	storage.Put([]byte("alice"), []byte("data"))
+	restored, _ := storage.Get([]byte("alice"))
+	fmt.Println("Restored:", string(restored))
+}
+
+```
+
+Due to standardized interface you may use
+
+**dynamic backend selection**
+
+(error handling omitted)
+
+```go
+func run(backendName string) {
+	storage, _ := create(backendName)
+	defer storage.Close()
+	storage.Put([]byte("alice"), []byte("data"))
+	restored, _ := storage.Get([]byte("alice"))
+	fmt.Println("Restored:", string(restored))
+}
+
+func create(backend string) (storages.Storage, error) {
+	switch backend {
+	case "file":
+		return filestorage.NewDefault("data"), nil
+	case "bolt", "bbolt", "bboltdb":
+		return boltdb.NewDefault("data")
+	case "memory":
+		return memstorage.New(), nil
+	default:
+		return memstorage.NewNOP(), nil
+	}
+}
+
+```
 
 # Backends and features
 
@@ -71,4 +108,12 @@ Table of all supported backends and their features.
 * [typedstorage](./cli/typedstorage) - make compile time type-safe wrapper around storage
 * [typedcache](./cli/typedcache) - make type-safe wrapper storage with hot and cold layer
 
+# Code conventions and agreements
+
+* [code and interface style](./convention/coding)
+
+
+# License
+
+The wrappers itself licensed under MIT but used libraries may have different license politics.
 
