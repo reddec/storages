@@ -37,11 +37,19 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 
 # Backends
 
-|  Backend  | Description   | Features  |
-|-----------|---------------|------------|
+{%- assign features = [] -%}
+{%- for page in site.pages -%}
+{%- if page.dir contains "/backends/" -%}
+{%- assign features = features | concat: page.features -%}
+{%- endif -%}
+{%- endfor -%}
+{%- assign features = features | sort | uniq -%}
+
+|  Backend  | Description   | {{features | join: " | "}}   |
+|-----------|---------------|{{ "------------|" | times: (features | size) }}
 {%- for page in site.pages %}
 {%- if page.dir contains "/backends/" %}
-|  [{{page.backend}}]({{page.url | relative_url}})  |  {{page.headline}}  | {%for feature in page.features %} {%if forloop.first == false%}, {%endif%} `{{feature | replace: "_" " "}}` {%endfor%}  |
+|  [{{page.backend}}]({{page.url | relative_url}})  |  {{page.headline}} {%for feature in features %} | {{page.features contains feature}}  {%endfor%}  |
 {%- endif %}
 {%- endfor %}
 
