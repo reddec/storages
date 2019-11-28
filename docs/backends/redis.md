@@ -1,6 +1,7 @@
 ---
 backend: "Redis"
 headline: "Redis hashmap as a storage"
+features: ["namespace"]
 ---
 # Redis
 

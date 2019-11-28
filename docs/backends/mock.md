@@ -1,6 +1,7 @@
 ---
 backend: "Mock"
 headline: "Mocking storage that do nothing"
+features: ["batch_writer"]
 ---
 ### NOP
 

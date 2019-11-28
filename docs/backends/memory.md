@@ -1,6 +1,7 @@
 ---
 backend: "In-Memory"
 headline: "HashMap-based in-memory storage"
+features: ["batch_writer", "namespace"]
 ---
 # Memory DB
 

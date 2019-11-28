@@ -1,6 +1,7 @@
 ---
 backend: "LevelDB"
 headline: "Multi-files, embeddable, pure-Go storage"
+features: ["batch_writer"]
 ---
 # Level DB
 

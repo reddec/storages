@@ -1,6 +1,7 @@
 ---
 backend: "BBolt"
 headline: "Single-file, embeddable, pure-Go storage"
+features: ["namespace"]
 ---
 # BBolt DB
 
