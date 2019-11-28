@@ -57,9 +57,10 @@ Table of all supported backends and their features.
 
 # Derived 
 
-* [deduplication](./derived/dedup)
-* [queues](./derived/queues)
-* [indexes](./derived/indexes)
+* [deduplication](./derived/dedup) - deduplication by key
+* [queues](./derived/queues) - make queue with any storage as backend
+* [sharding](./derived/sharding) - make storage that will distribute values to the different shard 
+* [indexes](./derived/indexes) - secondary unique and non-unique indexes
 
 # CLI 
 
@@ -67,7 +68,7 @@ Table of all supported backends and their features.
 
 ## Code-generation
 
-* [typedstorage](./cli/typedstorage)
-* [typedcache](./cli/typedcache)
+* [typedstorage](./cli/typedstorage) - make compile time type-safe wrapper around storage
+* [typedcache](./cli/typedcache) - make type-safe wrapper storage with hot and cold layer
 
 
