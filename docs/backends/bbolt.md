@@ -3,7 +3,8 @@
 [![API docs](https://godoc.org/github.com/reddec/storages/boltdb?status.svg)](http://godoc.org/github.com/reddec/storages/boltdb)
 
 * **import:** `github.com/reddec/storages/boltdb`
-* [BBolt project](https://github.com/etcd-io/bbolt) 
+* [BBolt project](https://github.com/etcd-io/bbolt)
+* Categories: {% page.categories %}
 
 Generates BoltDB (etc.d fork called bbolt) storage.
 
