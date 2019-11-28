@@ -35,7 +35,9 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 
 * [code and interface style](./convention/coding)
 
-# Backends
+# Backends and features
+
+Table of all supported backends and their features.
 
 {%- assign features = [] %}
 {%- for page in site.pages %}
@@ -46,10 +48,10 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 {%- assign features = features | sort | uniq %}
 
 |  Backend  | Description   | {{features | join: " | "}}   |
-|-----------|---------------|{%for feature in features %}------------|{%endfor%}
+|-----------|---------------|{%for feature in features %}:------------:|{%endfor%}
 {%- for page in site.pages %}
 {%- if page.dir contains "/backends/" %}
-|  [{{page.backend}}]({{page.url | relative_url}})  |  {{page.headline}} {%for feature in features %} | {% if page.features contains feature %} yes {%endif%} {%endfor%}  |
+|  [{{page.backend}}]({{page.url | relative_url}})  |  {{page.headline}} {%for feature in features %} | {% if page.features contains feature %} ✔ {%endif%} {%endfor%}  |
 {%- endif %}
 {%- endfor %}
 
