@@ -1,5 +1,5 @@
 ---
-name: "BBolt"
+backend: "BBolt"
 headline: "Single-file, embeddable, pure-Go storage"
 ---
 # BBolt DB

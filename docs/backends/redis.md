@@ -1,5 +1,5 @@
 ---
-name: "Redis"
+backend: "Redis"
 headline: "Redis hashmap as a storage"
 ---
 # Redis

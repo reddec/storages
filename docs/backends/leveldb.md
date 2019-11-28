@@ -1,5 +1,5 @@
 ---
-name: "LevelDB"
+backend: "LevelDB"
 headline: "Multi-files, embeddable, pure-Go storage"
 ---
 # Level DB

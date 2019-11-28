@@ -1,5 +1,5 @@
 ---
-name: "Mock"
+backend: "Mock"
 headline: "Mocking storage that do nothing"
 ---
 ### NOP

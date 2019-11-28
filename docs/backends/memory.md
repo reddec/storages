@@ -1,5 +1,5 @@
 ---
-name: "In-Memory"
+backend: "In-Memory"
 headline: "HashMap-based in-memory storage"
 ---
 # Memory DB

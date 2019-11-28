@@ -1,5 +1,5 @@
 ---
-name: "File"
+backend: "File"
 headline: "Local file-system storage"
 ---
 ### File storage
