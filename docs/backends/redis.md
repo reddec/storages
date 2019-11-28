@@ -16,9 +16,6 @@ Each namespace is each key supposing that the value is hashmap.
 
 Closing root (parent) storage will close all namespaced storages but not vice-versa.
 
-## Features
-
-{% include feature_namespace.md %}
 
 ## Usage
 
@@ -45,4 +42,10 @@ defer storage.Close()
 storage := NewClient("my-space", redisConnection)
 defer storage.Close()
 ```
+
+## Features
+
+{% for feature in features %}
+{% include feature_{{feature}}.md %}
+{% endfor %}
 

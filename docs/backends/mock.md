@@ -11,6 +11,10 @@ No-Operation storage that drops any content and returns not-exists on any reques
 
 Useful for mocking, performance testing or for any other logic that needs discard storage.
 
+## Usage
+
 ## Features
 
-{% include feature_batch_writer.md %}
+{% for feature in features %}
+{% include feature_{{feature}}.md %}
+{% endfor %}

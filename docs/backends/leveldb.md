@@ -24,4 +24,6 @@ defer stor.Close()
 
 ## Features
 
-{% include feature_batch_writer.md %}
+{% for feature in features %}
+{% include feature_{{feature}}.md %}
+{% endfor %}

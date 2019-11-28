@@ -13,14 +13,6 @@ Based on hashmap and RWLock in-memory storage. Values and keys are copied before
 
 For namespaces used Go `sync.Map`.
 
-## Features
-
-{% include feature_namespace.md %}
-
-{% include feature_batch_writer.md %}
-
-### Batch writing
-
 ## Usage
 
 ```go
@@ -28,3 +20,9 @@ storage := New()
 ```
 
 `Close()` is not required, however it is implemented as NOP.
+
+## Features
+
+{% for feature in features %}
+{% include feature_{{feature}}.md %}
+{% endfor %}

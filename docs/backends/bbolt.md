@@ -17,11 +17,6 @@ Default bucket name is `DEFAULT`.
 Uses buckets as namespaces. Closing root (parent) storage will close all namespaced storages but not vice-versa.
 
 
-
-## Features
-
-{% include feature_namespace.md %}
-
 ## Usage
 
 **With default bucket**
@@ -43,3 +38,9 @@ if err != nil {
 }
 defer storage.Close()
 ```
+
+## Features
+
+{% for feature in features %}
+{% include feature_{{feature}}.md %}
+{% endfor %}
