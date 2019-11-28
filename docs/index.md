@@ -37,13 +37,13 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 
 # Backends
 
-{%- assign features = [] -%}
-{%- for page in site.pages -%}
-{%- if page.dir contains "/backends/" -%}
-{%- assign features = features | concat: page.features -%}
-{%- endif -%}
-{%- endfor -%}
-{%- assign features = features | sort | uniq -%}
+{%- assign features = [] %}
+{%- for page in site.pages %}
+{%- if page.dir contains "/backends/" %}
+{%- assign features = features | concat: page.features %}
+{%- endif %}
+{%- endfor %}
+{%- assign features = features | sort | uniq %}
 
 |  Backend  | Description   | {{features | join: " | "}}   |
 |-----------|---------------|{%for feature in features %}------------|{%endfor%}
