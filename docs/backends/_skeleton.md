@@ -18,9 +18,4 @@ DESCRIPTION
 // TODO: code
 ```
 
-
-## Features
-
-{% for feature in page.features%}
-{% include feature_{{feature}}.md %}
-{% endfor %}
+{% include backend_tail.md page=page %}

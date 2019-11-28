@@ -1,11 +1,12 @@
 ---
-backend: "File"
+backend: "Filesystem"
+package: "filestorage"
 headline: "Local file-system storage"
-features: []
+features: ["namespace"]
+project_url: ""
 ---
-### File storage
 
-import: `github.com/reddec/storages/filestorage`
+{% include backend_head.md page=page %}
 
 * `New`, `NewDefault`
 
@@ -20,9 +21,26 @@ Namespace are share key space with regular values.
 
 ## Usage
 
-## Features
+**Flat**
 
-{% for feature in page.features%}
-{% include feature_{{feature}}.md %}
-{% endfor %}
+```go
+stor, err = filestorage.NewFlat("path/to/directory")
+if err != nil {
+    panic(err)
+}
+// Close() not required but implemented as NOP
+```
 
+
+**Encoded**
+
+```go
+stor, err = filestorage.NewDefault("path/to/directory")
+if err != nil {
+    panic(err)
+}
+// Close() not required but implemented as NOP
+```
+
+
+{% include backend_tail.md page=page %}

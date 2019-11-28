@@ -1,14 +1,11 @@
 ---
 backend: "LevelDB"
+package: "leveldbstorage"
 headline: "Multi-files, embeddable, pure-Go storage"
 features: ["batch_writer"]
+project_url: "https://github.com/syndtr/goleveldb"
 ---
-# Level DB
-
-[![API docs](https://godoc.org/github.com/reddec/storages/leveldbstorage?status.svg)](http://godoc.org/github.com/reddec/storages/leveldbstorage)
-
-* **import:** `github.com/reddec/storages/leveldbstorage`
-* [LevelDB project](https://github.com/syndtr/goleveldb) 
+{% include backend_head.md page=page %}
 
 Multi-files, embeddable, pure-Go storage. Uses levelDB storage as backend. Supports native batching.
 
@@ -22,8 +19,4 @@ if err != nil {
 defer stor.Close()
 ```
 
-## Features
-
-{% for feature in page.features%}
-{% include feature_{{feature}}.md %}
-{% endfor %}
+{% include backend_tail.md page=page %}
