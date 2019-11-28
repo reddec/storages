@@ -1,3 +1,7 @@
+---
+name: "In-Memory"
+headline: "HashMap-based in-memory storage"
+---
 # Memory DB
 
 [![API docs](https://godoc.org/github.com/reddec/storages/memstorage?status.svg)](http://godoc.org/github.com/reddec/storages/memstorage)

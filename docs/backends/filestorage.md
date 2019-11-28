@@ -1,3 +1,7 @@
+---
+name: "File"
+headline: "Local file-system storage"
+---
 ### File storage
 
 import: `github.com/reddec/storages/filestorage`

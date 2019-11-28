@@ -1,3 +1,7 @@
+---
+name: "LevelDB"
+headline: "Multi-files, embeddable, pure-Go storage"
+---
 # Level DB
 
 [![API docs](https://godoc.org/github.com/reddec/storages/leveldbstorage?status.svg)](http://godoc.org/github.com/reddec/storages/leveldbstorage)

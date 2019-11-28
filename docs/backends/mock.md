@@ -1,3 +1,7 @@
+---
+name: "Mock"
+headline: "Mocking storage that do nothing"
+---
 ### NOP
 
 import: `github.com/reddec/storages/memstorage`

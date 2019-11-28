@@ -1,3 +1,7 @@
+---
+name: "Redis"
+headline: "Redis hashmap as a storage"
+---
 # Redis
 
 [![API docs](https://godoc.org/github.com/reddec/storages/redistorage?status.svg)](http://godoc.org/github.com/reddec/storages/redistorage)

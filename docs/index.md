@@ -37,19 +37,11 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 
 # Backends
 
-* [BBolt](./backends/bbolt)
-* [LevelDB](./backends/leveldb)
-* [Memory](./backends/memory)
-* [Mock](./backends/mock)
-* [Redis](./backends/redis)
-* [Files](./backends/filestorage.md)
-* [S3](./backends/s3.md)
-
-{% for page in site.pages %}
-{% if page.dir contains "/backends/" %}
-* [page.name]({{page.url | relative_url}}) {{page.headline}}
-{% endif %}
-{% endfor %}
+{%- for page in site.pages %}
+{%- if page.dir contains "/backends/" %}
+* [{{page.name}}]({{page.url | relative_url}}) - {{page.headline}}
+{%- endif %}
+{%- endfor %}
 
 # Derived 
 
