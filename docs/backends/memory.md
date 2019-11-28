@@ -12,6 +12,8 @@ For namespaces used Go `sync.Map`.
 
 {% include feature_namespace.md %}
 
+{% include feature_batch_writer.md %}
+
 ### Batch writing
 
 ## Usage
