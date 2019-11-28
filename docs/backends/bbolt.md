@@ -1,3 +1,7 @@
+---
+name: "BBolt"
+headline: "Single-file, embeddable, pure-Go storage"
+---
 # BBolt DB
 
 [![API docs](https://godoc.org/github.com/reddec/storages/boltdb?status.svg)](http://godoc.org/github.com/reddec/storages/boltdb)

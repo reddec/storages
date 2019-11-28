@@ -47,7 +47,7 @@ The wrappers itself licensed under MIT but used libraries may have different lic
 
 {% for page in site.pages %}
 {% if page.dir contains "/backends/" %}
-* {{page.url | relative_url}}
+* [page.name]({{page.url | relative_url}}) {{page.headline}}
 {% endif %}
 {% endfor %}
 
