@@ -1,8 +1,21 @@
-### Level DB
+# Level DB
 
-import: `github.com/reddec/storages/leveldbstorage`
+[![API docs](https://godoc.org/github.com/reddec/storages/leveldbstorage?status.svg)](http://godoc.org/github.com/reddec/storages/leveldbstorage)
 
-Generates LevelDB storage (github.com/syndtr/goleveldb) and stores all item as-is inside DB
+* **import:** `github.com/reddec/storages/leveldbstorage`
+* [LevelDB project](https://github.com/syndtr/goleveldb) 
+
+Multi-files, embeddable, pure-Go storage. Uses levelDB storage as backend. Supports native batching.
+
+## Usage
+
+```go
+stor, err = leveldbstorage.New("path/to/dbdir")
+if err != nil {
+    panic(err)
+}
+defer stor.Close()
+```
 
 ## Features
 
