@@ -4,7 +4,7 @@
 
 * **import:** `github.com/reddec/storages/boltdb`
 * [BBolt project](https://github.com/etcd-io/bbolt)
-* Categories: {% page.categories %}
+* Categories: {{ page.categories }}
 
 Generates BoltDB (etc.d fork called bbolt) storage.
 
