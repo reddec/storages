@@ -12,7 +12,9 @@ import (
 	"github.com/reddec/storages/memstorage"
 	"github.com/reddec/storages/redistorage"
 	"github.com/reddec/storages/sharded"
+	"github.com/reddec/storages/std/rest"
 	"github.com/stretchr/testify/assert"
+	"net/http/httptest"
 	"os"
 	"reflect"
 	"testing"
@@ -61,6 +63,18 @@ func Test_Storages(t *testing.T) {
 	TestFlat(t)
 	// Test bolt
 	TestBolt(t)
+	// Test REST client and server
+	TestRest(t)
+}
+
+func TestRest(t *testing.T) {
+	back := memstorage.New()
+	server := httptest.NewServer(rest.NewServer(back))
+	defer server.Close()
+
+	stor := rest.NewClient(server.URL)
+	defer stor.Close()
+	testStorage(t, stor, "", true)
 }
 
 func TestShard(t *testing.T) {
