@@ -18,7 +18,7 @@ type naive struct {
 // Naive implementation of deduplicate process: simply keep keys as-is, remove old keys when amount (quantity) increased up to
 // maxKeys * cleanFactor till maxKeys count. Relay on Keys() method of storage to detect order of keys.
 // Cleaning of old keys initiates in Save() method automatically in a same thread.
-func NewNaive(storage storages.Storage, maxKeys int, cleanFactor int) (Dedup, error) {
+func NewNaive(storage storages.Storage, maxKeys int, cleanFactor int) (*naive, error) {
 	nv := &naive{
 		storage:       storage,
 		maxKeys:       maxKeys,
