@@ -22,6 +22,10 @@ func NewClient(baseURL string) *restClient {
 }
 
 func NewClientContext(baseURL string, ctx context.Context, timeout time.Duration) *restClient {
+	return NewCustomClientContext(http.DefaultClient, baseURL, ctx, timeout)
+}
+
+func NewCustomClientContext(client *http.Client, baseURL string, ctx context.Context, timeout time.Duration) *restClient {
 	if !strings.HasSuffix(baseURL, "/") {
 		baseURL += "/"
 	}
@@ -29,6 +33,7 @@ func NewClientContext(baseURL string, ctx context.Context, timeout time.Duration
 		ctx:     ctx,
 		timeout: timeout,
 		baseURL: baseURL,
+		client:  client,
 	}
 }
 
@@ -36,6 +41,7 @@ type restClient struct {
 	ctx     context.Context
 	timeout time.Duration
 	baseURL string
+	client  *http.Client
 }
 
 func (r *restClient) Put(key []byte, data []byte) error {
@@ -45,7 +51,7 @@ func (r *restClient) Put(key []byte, data []byte) error {
 	if err != nil {
 		return errors.Wrap(err, "rest: post key, prepare request")
 	}
-	res, err := http.DefaultClient.Do(req)
+	res, err := r.client.Do(req)
 	if err != nil {
 		return errors.Wrapf(err, "rest: post key, execute request")
 	}
@@ -65,7 +71,7 @@ func (r *restClient) Get(key []byte) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "rest: get key, prepare request")
 	}
-	res, err := http.DefaultClient.Do(req)
+	res, err := r.client.Do(req)
 	if err != nil {
 		return nil, errors.Wrapf(err, "rest: get key, execute request")
 	}
@@ -85,7 +91,7 @@ func (r *restClient) Del(key []byte) error {
 	if err != nil {
 		return errors.Wrap(err, "rest: delete key, prepare request")
 	}
-	res, err := http.DefaultClient.Do(req)
+	res, err := r.client.Do(req)
 	if err != nil {
 		return errors.Wrapf(err, "rest: delete key, execute request")
 	}
@@ -103,7 +109,7 @@ func (r *restClient) Keys(handler func(key []byte) error) error {
 	if err != nil {
 		return errors.Wrap(err, "rest: list keys, prepare request")
 	}
-	res, err := http.DefaultClient.Do(req)
+	res, err := r.client.Do(req)
 	if err != nil {
 		return errors.Wrapf(err, "rest: list keys, execute request")
 	}
