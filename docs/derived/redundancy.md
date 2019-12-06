@@ -5,9 +5,9 @@ Redundancy is a process to copy data through multiple storages.
 
                   storage1 (data from 0..N)
                 🡕
-    data(0...N) 🡒 storage1 (data from 0..N)
+    data(0...N) 🡒 storage2 (data from 0..N)
                 🡖 
-                  storage1 (data from 0..N)
+                  storageM (data from 0..N)
                   
 In contrast of [sharding](sharding) where data scattered over multiple storages without duplicates, the
 redundancy oppositely coping data to all underlying storages (depends of writer strategy).

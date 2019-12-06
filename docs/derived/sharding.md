@@ -4,9 +4,9 @@ Sharding is a process to distribute data through multiple storages.
 
                   storage1 (data from 0..x)
                 🡕
-    data(0...N) 🡒 storage1 (data from 0..y)
+    data(0...N) 🡒 storage2 (data from 0..y)
                 🡖 
-                  storage1 (data from 0..z)
+                  storageM (data from 0..z)
     
 
 Sharded storage mimics to usual [Storage](https://godoc.org/github.com/reddec/storages#Storage) interface so 
