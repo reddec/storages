@@ -12,34 +12,21 @@ Usage:
 
 ```
 Usage:
-  storages [OPTIONS] [Command] [key] [Value]
+  storages [OPTIONS] <command>
 
 Application Options:
-  -t, --db=[file|leveldb|redis|s3] DB mode (default: file) [$DB]
-  -s, --stream                     Use STDIN as source of value [$STREAM]
-  -0, --null                       Use zero byte as terminator for list instead of new line [$NULL]
-
-File storage params:
-      --file.location=             Root dir to store data (default: ./db) [$FILE_LOCATION]
-
-LevelDB storage params:
-      --leveldb.location=          Root dir to store data (default: ./db) [$LEVELDB_LOCATION]
-
-Redis storage params:
-      --redis.url=                 Redis URL (default: redis://localhost) [$REDIS_URL]
-      --redis.namespace=           Hashmap name (default: db) [$REDIS_NAMESPACE]
-
-S3 storage:
-      --s3.bucket=                 S3 AWS bucket [$S3_BUCKET]
-      --s3.endpoint=               Override AWS endpoint for AWS-capable services [$S3_ENDPOINT]
-      --s3.force-path-style        Force the request to use path-style addressing [$S3_FORCE_PATH_STYLE]
+  -u, --url=  Storage URL (default: bbolt://data) [$URL]
 
 Help Options:
-  -h, --help                       Show this help message
+  -h, --help  Show this help message
 
-Arguments:
-  Command:                         what to do (put, list, get, del)
-  key:                             key name
-  Value:                           Value to put if stream flag is not enabled
+Available commands:
+  get        get value by key (aliases: fetch, g)
+  list       list keys in storage (aliases: ls)
+  remove     remove value by key (aliases: delete, del, rm)
+  set        set value for key (aliases: put, s)
+  supported  list supported storages backends
 
 ```
+
+See `storages <command> --help`
