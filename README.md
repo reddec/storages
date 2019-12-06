@@ -27,6 +27,19 @@ type Storage interface {
 
 See [documentation](https://reddec.github.io/storages/) for details
 
+**one more example...**
+
+You can create different storage types just by URL (if you imported required package):
+
+For example, use Redis db as a backend
+
+```go
+storage, err := std.Create("redis://localhost")
+if err != nil {
+    panic(err)
+}
+defer storage.Close()
+```
 
 # License
 
