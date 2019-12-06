@@ -2,6 +2,8 @@ package memstorage
 
 import (
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
+	"net/url"
 	"os"
 	"sync"
 )
@@ -114,4 +116,10 @@ func (bdp *memoryMap) BatchWriter() storages.Writer {
 // New in-memory storage, based on Go concurrent map. For each Add and Get new copy of key and data will be made.
 func New() *memoryMap {
 	return &memoryMap{}
+}
+
+func init() {
+	std.RegisterWithMapper("memory", func(url *url.URL) (storage storages.Storage, e error) {
+		return New(), nil
+	})
 }

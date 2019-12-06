@@ -2,9 +2,12 @@ package leveldbstorage
 
 import (
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
+	"net/url"
 	"os"
+	"path/filepath"
 )
 
 type leveldbMap struct {
@@ -72,4 +75,10 @@ func (dbt *dbBatch) Put(key []byte, data []byte) error {
 
 func (dbt *dbBatch) Close() error {
 	return dbt.db.Write(dbt.batch, &opt.WriteOptions{})
+}
+
+func init() {
+	std.RegisterWithMapper("leveldb", func(url *url.URL) (storage storages.Storage, e error) {
+		return New(filepath.Join(url.Host, url.Path))
+	})
 }

@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/reddec/storages/std"
+	_ "github.com/reddec/storages/std/leveldbstorage"
 	_ "github.com/reddec/storages/std/redistorage"
 	_ "github.com/reddec/storages/std/rest"
 	"reflect"
@@ -11,6 +12,7 @@ import (
 func TestCreateByURL(t *testing.T) {
 	testCreate("http://example.com/abc", "restClient", t)
 	testCreate("redis://myhost/1?key=data", "redisStorage", t)
+	testCreate("leveldb://../test/data", "leveldbMap", t)
 }
 
 func testCreate(url string, expected string, t *testing.T) {

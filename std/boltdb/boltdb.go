@@ -2,8 +2,11 @@ package boltdb
 
 import (
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
 	"go.etcd.io/bbolt"
+	"net/url"
 	"os"
+	"path/filepath"
 )
 
 const (
@@ -113,5 +116,11 @@ func (bdb *boltDB) Namespaces(handler func(name []byte) error) error {
 		return tx.ForEach(func(name []byte, b *bbolt.Bucket) error {
 			return handler(name)
 		})
+	})
+}
+
+func init() {
+	std.RegisterWithMapper("bbolt", func(url *url.URL) (storage storages.Storage, e error) {
+		return NewDefault(filepath.Join(url.Host, url.Path))
 	})
 }

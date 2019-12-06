@@ -2,6 +2,8 @@ package memstorage
 
 import (
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
+	"net/url"
 	"os"
 )
 
@@ -18,4 +20,10 @@ func (np *nopStorage) BatchWriter() storages.Writer              { return NewNOP
 // Useful for mocking, performance testing or for dropping several keys.
 func NewNOP() storages.BatchedStorage {
 	return &nopStorage{}
+}
+
+func init() {
+	std.RegisterWithMapper("nop", func(url *url.URL) (storage storages.Storage, e error) {
+		return NewNOP(), nil
+	})
 }

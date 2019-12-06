@@ -3,7 +3,9 @@ package filestorage
 import (
 	"github.com/pkg/errors"
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -128,4 +130,13 @@ func (ds *flatStorage) Close() error { return nil } // NOP
 
 func (ds *flatStorage) fileNamePath(name string) string {
 	return filepath.Join(ds.location, name)
+}
+
+func init() {
+	std.RegisterWithMapper("file", func(url *url.URL) (storage storages.Storage, e error) {
+		return NewDefault(filepath.Join(url.Host, url.Path)), nil
+	})
+	std.RegisterWithMapper("file+flat", func(url *url.URL) (storage storages.Storage, e error) {
+		return NewFlat(filepath.Join(url.Host, url.Path)), nil
+	})
 }

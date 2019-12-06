@@ -3,10 +3,13 @@ package awsstorage
 import (
 	"bytes"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
+	"net/url"
 	"os"
 	"strings"
 )
@@ -86,4 +89,17 @@ func (s *storage) Keys(handler func(key []byte) error) error {
 		return reqErr
 	}
 	return err
+}
+
+func init() {
+	std.RegisterWithMapper("s3", func(url *url.URL) (storage storages.Storage, e error) {
+		config := aws.NewConfig()
+		if url.Host != "" {
+			config = config.WithEndpoint(url.Host)
+			forcePath := url.Query().Get("force-path") != ""
+			config.S3ForcePathStyle = &forcePath
+		}
+		config.Credentials = credentials.NewEnvCredentials()
+		return New(strings.Trim(url.Path, "/"), config)
+	})
 }
