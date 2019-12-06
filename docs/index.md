@@ -98,6 +98,7 @@ Table of all supported backends and their features.
 * [queues](./derived/queues) - make queue with any storage as backend
 * [sharding](./derived/sharding) - make storage that will distribute values to the different shard 
 * [indexes](./derived/indexes) - secondary unique and non-unique indexes
+* [redundancy](./derived/redundancy) - copy keys to several storages
 
 # CLI 
 

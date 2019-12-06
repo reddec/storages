@@ -60,6 +60,12 @@ type NamespacedStorage interface {
 	DelNamespace(name []byte) error
 }
 
+// Clear storage
+type Clearable interface {
+	// Clear all data in storage
+	Clear() error
+}
+
 // Extract all keys from storage as-is
 func AllKeys(storage Storage) ([][]byte, error) {
 	if storage == nil {
