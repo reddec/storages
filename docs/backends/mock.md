@@ -11,6 +11,13 @@ No-Operation storage that drops any content and returns not-exists on any reques
 
 Useful for mocking, performance testing or for any other logic that needs discard storage.
 
+### URL initialization
+
+Do not forget to import package!
+
+`nop://`
+
+
 ## Usage
 
 **Example**

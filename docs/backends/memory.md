@@ -11,6 +11,12 @@ Based on hashmap and RWLock in-memory storage. Values and keys are copied before
 
 For namespaces used Go `sync.Map`.
 
+### URL initialization
+
+Do not forget to import package!
+
+`memory://`
+
 ## Usage
 
 ```go

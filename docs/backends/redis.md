@@ -13,6 +13,25 @@ Each namespace is each key supposing that the value is hashmap.
 
 Closing root (parent) storage will close all namespaced storages but not vice-versa.
 
+### URL initialization
+
+Do not forget to import package!
+
+`redis://[[user][:<password>]@]<host>[:port][/<dbnum>][?key=<key>]`
+
+Where:
+
+* `<user>` - optional user name for authorization
+* `<password>` - optional password for authorization
+* `<host>` - required address of redis database
+* `<port>` - optional (default 6379) database port
+* `<dbnum>` - optional (default 0) database num
+* `<key>` - optional (default `DEFAULT`) name of hashmap to store data 
+
+Example:
+
+* `redis://localhost` - simple, without authorization, on local host
+* `redis://user:qwerty@localhost:8899/1?key=data` - with authorization, on localhost with custom port and custom database with hashmap key `data`
 
 ## Usage
 

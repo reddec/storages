@@ -13,6 +13,15 @@ Default bucket name is `DEFAULT`.
 
 Uses buckets as namespaces. Closing root (parent) storage will close all namespaced storages but not vice-versa.
 
+## URL initialization
+
+Do not forget to import package!
+
+`bbolt://<path>`
+
+Where:
+
+* `<path>` - path storage file
 
 ## Usage
 

@@ -23,6 +23,16 @@ no key in a storage, but operation successful:  `404` MUST be returned.
 
 You may expose any storage that follow `Storage` interface by simple wrapper: `NewServer(storage)`
 
+### URL initialization
+
+Do not forget to import package!
+
+`http://` or `https://` plain url to remote backend
+
+Example:
+
+* `https://example.com/my/storage`
+
 ## Usage
 
 **Example client**

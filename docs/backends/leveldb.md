@@ -9,6 +9,16 @@ project_url: "https://github.com/syndtr/goleveldb"
 
 Multi-files, embeddable, pure-Go storage. Uses levelDB storage as backend. Supports native batching.
 
+### URL initialization
+
+Do not forget to import package!
+
+`leveldb://<path>`
+
+Where:
+
+* `<path>` - path to root directory for level db storage
+
 ## Usage
 
 ```go

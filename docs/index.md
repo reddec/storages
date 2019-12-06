@@ -49,25 +49,12 @@ Due to standardized interface you may use
 (error handling omitted)
 
 ```go
-func run(backendName string) {
-	storage, _ := create(backendName)
+func run(backendURL string) {
+	storage, _ := std.Create(backendURL)
 	defer storage.Close()
 	storage.Put([]byte("alice"), []byte("data"))
 	restored, _ := storage.Get([]byte("alice"))
 	fmt.Println("Restored:", string(restored))
-}
-
-func create(backend string) (storages.Storage, error) {
-	switch backend {
-	case "file":
-		return filestorage.NewDefault("data"), nil
-	case "bolt", "bbolt", "bboltdb":
-		return boltdb.NewDefault("data")
-	case "memory":
-		return memstorage.New(), nil
-	default:
-		return memstorage.NewNOP(), nil
-	}
 }
 
 ```
