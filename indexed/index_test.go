@@ -3,7 +3,7 @@ package indexed
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/reddec/storages/memstorage"
+	"github.com/reddec/storages/std/memstorage"
 )
 
 func ExampleNewIndex() {

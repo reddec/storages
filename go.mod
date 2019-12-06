@@ -7,6 +7,7 @@ require (
 	github.com/dave/jennifer v1.3.0
 	github.com/go-redis/redis v6.15.5+incompatible
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/gorilla/schema v1.1.0
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/knq/snaker v0.0.0-20181215144011-2bc8a4db4687
 	github.com/pkg/errors v0.8.1

@@ -2,7 +2,7 @@ package dedup
 
 import (
 	"github.com/reddec/storages"
-	"github.com/reddec/storages/memstorage"
+	"github.com/reddec/storages/std/memstorage"
 	"testing"
 )
 

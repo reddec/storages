@@ -6,8 +6,11 @@ import (
 	"context"
 	"encoding/base64"
 	"github.com/pkg/errors"
+	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -133,4 +136,13 @@ func (r *restClient) Keys(handler func(key []byte) error) error {
 		}
 	}
 	return nil
+}
+
+func init() {
+	std.RegisterWithMapper("http", func(url *url.URL) (storage storages.Storage, e error) {
+		return NewClient(url.String()), nil
+	})
+	std.RegisterWithMapper("https", func(url *url.URL) (storage storages.Storage, e error) {
+		return NewClient(url.String()), nil
+	})
 }

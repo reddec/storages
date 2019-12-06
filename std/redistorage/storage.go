@@ -3,6 +3,8 @@ package redistorage
 import (
 	"github.com/go-redis/redis"
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/std"
+	"net/url"
 	"os"
 )
 
@@ -106,4 +108,17 @@ func MustNew(namespace string, url string) storages.NamespacedStorage {
 		panic(err)
 	}
 	return st
+}
+
+const DefaultNamespace = "DEFAULT"
+
+func init() {
+	std.RegisterWithMapper("redis", func(url *url.URL) (storage storages.Storage, e error) {
+		key := url.Query().Get("key")
+		if key == "" {
+			key = DefaultNamespace
+		}
+		url.RawQuery = ""
+		return New(key, url.String())
+	})
 }

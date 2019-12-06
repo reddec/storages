@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"github.com/pkg/errors"
-	"github.com/reddec/storages/memstorage"
+	"github.com/reddec/storages/std/memstorage"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
