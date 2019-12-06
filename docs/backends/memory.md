@@ -1,6 +1,6 @@
 ---
 backend: "In-Memory"
-package: "memstorage"
+package: "std/memstorage"
 headline: "HashMap-based in-memory storage"
 features: ["batch_writer", "namespace", "clearable"]
 project_url: ""

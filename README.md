@@ -27,8 +27,6 @@ type Storage interface {
 
 See [documentation](https://reddec.github.io/storages/) for details
 
-**Important notice:** sooner or later standard storage wrapper will be moved to `std` package to remove mess
-in project. See `rest` as en example.
 
 # License
 

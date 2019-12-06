@@ -1,6 +1,6 @@
 ---
 backend: "Redis"
-package: "redistorage"
+package: "std/redistorage"
 headline: "Redis hashmap as a storage"
 features: ["namespace"]
 project_url: "https://github.com/go-redis/redis"

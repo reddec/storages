@@ -1,6 +1,6 @@
 ---
 backend: "BBolt"
-package: "boltdb"
+package: "std/boltdb"
 headline: "Single-file, embeddable, pure-Go storage"
 features: ["namespace"]
 project_url: "https://github.com/etcd-io/bbolt"

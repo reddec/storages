@@ -3,8 +3,8 @@ package tests
 import (
 	"fmt"
 	"github.com/reddec/storages"
-	"github.com/reddec/storages/memstorage"
 	"github.com/reddec/storages/queues"
+	"github.com/reddec/storages/std/memstorage"
 	"strconv"
 	"testing"
 )

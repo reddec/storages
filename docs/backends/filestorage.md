@@ -1,6 +1,6 @@
 ---
 backend: "Filesystem"
-package: "filestorage"
+package: "std/filestorage"
 headline: "Local file-system storage"
 features: ["namespace"]
 project_url: ""

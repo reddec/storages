@@ -1,6 +1,6 @@
 ---
 backend: "Mock"
-package: "memstorage"
+package: "std/memstorage"
 headline: "Mocking storage that do nothing"
 features: ["batch_writer"]
 project_url: ""

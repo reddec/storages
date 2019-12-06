@@ -1,6 +1,6 @@
 ---
 backend: "LevelDB"
-package: "leveldbstorage"
+package: "std/leveldbstorage"
 headline: "Multi-files, embeddable, pure-Go storage"
 features: ["batch_writer"]
 project_url: "https://github.com/syndtr/goleveldb"
