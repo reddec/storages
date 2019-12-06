@@ -128,6 +128,9 @@ func AtLeast(minWrite int) DWriter {
 	}
 }
 
+// Shorthand for AtLeast(1) - requires at least one successful write operation
+func Any() DWriter { return AtLeast(1) }
+
 // First non-empty value for key will be used as result
 func First() DReader {
 	return func(key []byte, storages []Storage) ([]byte, error) {
