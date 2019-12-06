@@ -2,7 +2,9 @@ package storages
 
 import (
 	"github.com/pkg/errors"
+	"os"
 	"strings"
+	"sync"
 )
 
 // Distributed writer strategy
@@ -31,6 +33,7 @@ type redundant struct {
 	keysDeduplication Dedup     // used for deduplication during iteration
 	writer            DWriter
 	reader            DReader
+	iterationLock     sync.Mutex
 }
 
 func (dt *redundant) Put(key []byte, data []byte) error {
@@ -61,6 +64,8 @@ func (dt *redundant) Del(key []byte) error {
 }
 
 func (dt *redundant) Keys(handler func(key []byte) error) error {
+	dt.iterationLock.Lock()
+	defer dt.iterationLock.Unlock()
 	var list []error
 	for _, stor := range dt.backed {
 		err := stor.Keys(func(key []byte) error {
@@ -126,15 +131,12 @@ func AtLeast(minWrite int) DWriter {
 // First non-empty value for key will be used as result
 func First() DReader {
 	return func(key []byte, storages []Storage) ([]byte, error) {
-		var list []error
 		for _, stor := range storages {
 			data, err := stor.Get(key)
-			if err != nil {
-				list = append(list, err)
-			} else {
+			if err == nil {
 				return data, nil
 			}
 		}
-		return nil, allErr(list...)
+		return nil, os.ErrNotExist
 	}
 }

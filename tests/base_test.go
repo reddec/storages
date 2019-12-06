@@ -7,6 +7,7 @@ import (
 	"github.com/reddec/storages"
 	"github.com/reddec/storages/awsstorage"
 	"github.com/reddec/storages/boltdb"
+	"github.com/reddec/storages/dedup"
 	"github.com/reddec/storages/filestorage"
 	"github.com/reddec/storages/leveldbstorage"
 	"github.com/reddec/storages/memstorage"
@@ -75,6 +76,22 @@ func TestRest(t *testing.T) {
 	stor := rest.NewClient(server.URL)
 	defer stor.Close()
 	testStorage(t, stor, "", true)
+}
+func TestRedundancy(t *testing.T) {
+	var used []storages.Storage
+
+	for i := 0; i < 10; i++ {
+		if i%2 == 0 {
+			used = append(used, memstorage.NewNOP()) // simulate successful write but broken read
+		} else {
+			used = append(used, memstorage.New())
+		}
+	}
+
+	rdr := storages.RedundantAll(dedup.Offloaded(memstorage.New()), used...)
+	defer rdr.Close()
+
+	testStorage(t, rdr, "", true)
 }
 
 func TestShard(t *testing.T) {
@@ -188,11 +205,19 @@ func testStorage(t *testing.T, storage storages.Storage, testDir string, testNes
 	}
 	// get data
 	data, err := storage.Get([]byte("test1"))
+	if err != nil {
+		t.Error("get test1:", err)
+		return
+	}
 	if string(data) != "hello world 1" {
 		t.Error("corrupted value for test1:", string(data))
 		return
 	}
 	data, err = storage.Get([]byte("test2"))
+	if err != nil {
+		t.Error("get test2:", err)
+		return
+	}
 	if string(data) != "hello world 2" {
 		t.Error("corrupted value for test2:", string(data))
 		return
