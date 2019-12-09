@@ -25,6 +25,7 @@ type Config struct {
 	Get       getKey        `command:"get" alias:"fetch" alias:"g" description:"get value by key"`
 	Set       setKey        `command:"set" alias:"put" alias:"s" description:"set value for key"`
 	Del       removeKey     `command:"remove" alias:"delete" alias:"del" alias:"rm" description:"remove value by key"`
+	Copy      cpKeys        `command:"copy" alias:"cp" alias:"c" description:"copy keys from storage to destination"`
 }
 
 func (cfg *Config) Storage() storages.Storage {
@@ -126,4 +127,27 @@ func (r *removeKey) Execute(args []string) error {
 	db := config.Storage()
 	defer db.Close()
 	return db.Del([]byte(r.Args.Key))
+}
+
+type cpKeys struct {
+	Args struct {
+		URL string `description:"destination storage URL" positional-arg-name:"url" required:"yes"`
+	} `positional-args:"yes"`
+}
+
+func (c *cpKeys) Execute(args []string) error {
+	from := config.Storage()
+	defer from.Close()
+	to, err := std.Create(c.Args.URL)
+	if err != nil {
+		return err
+	}
+	defer to.Close()
+	return from.Keys(func(key []byte) error {
+		data, err := from.Get(key)
+		if err != nil {
+			return err
+		}
+		return to.Put(key, data)
+	})
 }
