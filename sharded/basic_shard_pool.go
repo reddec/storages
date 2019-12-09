@@ -17,6 +17,13 @@ func NewHashed(shards uint32, factory StorageFactoryFunc) *hashShard {
 	return NewHashedCustom(shards, factory, crc32.ChecksumIEEE)
 }
 
+// New pool based on default hash distribution and fixed number of pre-allocated shards
+func NewHashedArray(shards []storages.Storage) *hashShard {
+	return NewHashed(uint32(len(shards)), func(shardID uint32) (storage storages.Storage, err error) {
+		return shards[shardID], nil
+	})
+}
+
 // New  shard pool based on custom hash distribution.
 // Shards will be open dynamically on-demand and kept open till pool closed.
 // Thread safe.
