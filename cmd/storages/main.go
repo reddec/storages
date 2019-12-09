@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 	"github.com/reddec/storages"
+	"github.com/reddec/storages/cmd/storages/internal"
 	"github.com/reddec/storages/std"
 	_ "github.com/reddec/storages/std/awsstorage"
 	_ "github.com/reddec/storages/std/boltdb"
@@ -12,6 +14,7 @@ import (
 	_ "github.com/reddec/storages/std/memstorage"
 	_ "github.com/reddec/storages/std/redistorage"
 	_ "github.com/reddec/storages/std/rest"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -56,26 +59,47 @@ func (l listSupported) Execute(args []string) error {
 	return nil
 }
 
+type LineCodec interface {
+	io.Closer
+	Write([]byte) error
+}
+
 type listKeys struct {
-	Null bool `long:"null" short:"0" env:"NULL" description:"Use zero byte as terminator for list instead of new line"`
+	Null bool   `long:"null" short:"0" env:"NULL" description:"Use zero byte as terminator for list instead of new line (shorthand for -t null)"`
+	JSON bool   `long:"json" env:"JSON" description:"Print keys as JSON array (shorthand for -t json)"`
+	Type string `short:"t" long:"type" env:"TYPE" description:"Output encoding type" default:"plain" choice:"plain" choice:"null" choice:"json" choice:"base64" choice:"b64"`
+}
+
+func (l listKeys) getCodec() (LineCodec, error) {
+	if l.Null {
+		l.Type = "null"
+	}
+	if l.JSON {
+		l.Type = "json"
+	}
+	switch l.Type {
+	case "json":
+		return internal.NewStringJSONLine(os.Stdout)
+	case "null":
+		return internal.NewPlainLine(os.Stdout, 0, false), nil
+	case "plain":
+		return internal.NewPlainLine(os.Stdout, '\n', true), nil
+	case "bas64", "b64":
+		return internal.NewBase64Line(os.Stdout), nil
+	default:
+		return nil, errors.Errorf("encoding %v not known", l.Type)
+	}
 }
 
 func (l listKeys) Execute(args []string) error {
 	db := config.Storage()
 	defer db.Close()
-	return db.Keys(func(key []byte) error {
-		var err error
-		_, err = os.Stdout.Write(key)
-		if err != nil {
-			return err
-		}
-		if l.Null {
-			_, err = os.Stdout.Write([]byte{0})
-		} else {
-			_, err = os.Stdout.Write([]byte("\n"))
-		}
+	codec, err := l.getCodec()
+	if err != nil {
 		return err
-	})
+	}
+	defer codec.Close()
+	return db.Keys(codec.Write)
 }
 
 type getKey struct {
