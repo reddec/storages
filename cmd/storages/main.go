@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
@@ -13,12 +14,16 @@ import (
 	_ "github.com/reddec/storages/std/leveldbstorage"
 	_ "github.com/reddec/storages/std/memstorage"
 	_ "github.com/reddec/storages/std/redistorage"
+	"github.com/reddec/storages/std/rest"
 	_ "github.com/reddec/storages/std/rest"
 	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
 	"sort"
+	"time"
 )
 
 type Config struct {
@@ -29,6 +34,7 @@ type Config struct {
 	Set       setKey        `command:"set" alias:"put" alias:"s" description:"set value for key"`
 	Del       removeKey     `command:"remove" alias:"delete" alias:"del" alias:"rm" description:"remove value by key"`
 	Copy      cpKeys        `command:"copy" alias:"cp" alias:"c" description:"copy keys from storage to destination"`
+	Serve     restServe     `command:"serve" alias:"rest" description:"expose storage over REST interface"`
 }
 
 func (cfg *Config) Storage() storages.Storage {
@@ -42,6 +48,7 @@ func (cfg *Config) Storage() storages.Storage {
 var config Config
 
 func main() {
+	log.SetOutput(os.Stderr)
 	_, err := flags.Parse(&config)
 	if err != nil {
 		os.Exit(1)
@@ -174,4 +181,33 @@ func (c *cpKeys) Execute(args []string) error {
 		}
 		return to.Put(key, data)
 	})
+}
+
+type restServe struct {
+	GracefulShutdown time.Duration `long:"graceful-shutdown" env:"GRACEFUL_SHUTDOWN" description:"Interval before server shutdown" default:"15s"`
+	Bind             string        `long:"bind" env:"BIND" description:"Address to where bind HTTP server" default:"0.0.0.0:8080"`
+	TLS              bool          `long:"tls" env:"TLS" description:"Enable HTTPS serving with TLS"`
+	CertFile         string        `long:"cert-file" env:"CERT_FILE" description:"Path to certificate for TLS" default:"server.crt"`
+	KeyFile          string        `long:"key-file" env:"KEY_FILE" description:"Path to private key for TLS" default:"sever.key"`
+}
+
+func (r *restServe) Execute(args []string) error {
+	storage := config.Storage()
+	defer storage.Close()
+
+	server := http.Server{
+		Addr:    r.Bind,
+		Handler: rest.NewServer(storage),
+	}
+
+	go func() {
+		c := make(chan os.Signal, 2)
+		signal.Notify(c, os.Kill, os.Interrupt)
+		<-c
+		ctx, cancel := context.WithTimeout(context.Background(), r.GracefulShutdown)
+		defer cancel()
+		server.Shutdown(ctx)
+	}()
+	log.Println("REST server is on", r.Bind)
+	return server.ListenAndServeTLS(r.CertFile, r.KeyFile)
 }
