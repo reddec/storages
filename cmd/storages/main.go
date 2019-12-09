@@ -209,5 +209,8 @@ func (r *restServe) Execute(args []string) error {
 		server.Shutdown(ctx)
 	}()
 	log.Println("REST server is on", r.Bind)
-	return server.ListenAndServeTLS(r.CertFile, r.KeyFile)
+	if r.TLS {
+		return server.ListenAndServeTLS(r.CertFile, r.KeyFile)
+	}
+	return server.ListenAndServe()
 }
