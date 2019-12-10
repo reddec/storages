@@ -173,14 +173,21 @@ func (s *setKey) Execute(args []string) error {
 
 type removeKey struct {
 	Args struct {
-		Key string `description:"key name" positional-arg-name:"key" required:"yes"`
+		Key []string `description:"key names, if not set - STDIN lines used" positional-arg-name:"key"`
 	} `positional-args:"yes"`
 }
 
 func (r *removeKey) Execute(args []string) error {
 	db := config.Storage()
 	defer db.Close()
-	return db.Del([]byte(r.Args.Key))
+	keys := getArgs(r.Args.Key...)
+	for keys.Scan() {
+		err := db.Del(keys.Bytes())
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type cpKeys struct {
@@ -236,4 +243,11 @@ func (r *restServe) Execute(args []string) error {
 		return server.ListenAndServeTLS(r.CertFile, r.KeyFile)
 	}
 	return server.ListenAndServe()
+}
+
+func getArgs(def ...string) *bufio.Scanner {
+	if len(def) == 0 {
+		return bufio.NewScanner(os.Stdin)
+	}
+	return bufio.NewScanner(bytes.NewBufferString(strings.Join(def, "\n")))
 }
