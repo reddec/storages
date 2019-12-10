@@ -25,6 +25,7 @@ import (
 	"os"
 	"os/signal"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -129,7 +130,8 @@ func (g *getKey) Execute(args []string) error {
 }
 
 type setKey struct {
-	Args struct {
+	Separator string `short:"s" long:"separator" env:"SEPARATOR" description:"Separator between key and value in line when stream used as source" default:" "`
+	Args      struct {
 		Key   string `description:"key name" positional-arg-name:"key"`
 		Value string `description:"Value to put. Used STDIN if not set"`
 	} `positional-args:"yes"`
@@ -149,13 +151,14 @@ func (s *setKey) Execute(args []string) error {
 		}
 		return db.Put([]byte(s.Args.Key), data)
 	} else {
+		s.Separator = strings.ReplaceAll(s.Separator, "\\t", "\t")
 		reader := bufio.NewScanner(os.Stdin)
 		for reader.Scan() {
 			line := reader.Bytes()
 			if len(line) == 0 {
 				continue
 			}
-			kv := bytes.SplitN(line, []byte{' '}, 2)
+			kv := bytes.SplitN(line, []byte(s.Separator), 2)
 			if len(kv) == 1 {
 				continue
 			}
