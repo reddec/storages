@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/jessevdk/go-flags"
@@ -127,25 +129,43 @@ func (g *getKey) Execute(args []string) error {
 }
 
 type setKey struct {
-	Stream bool `long:"stream" short:"s" env:"STREAM" description:"Use STDIN as source of value"`
-	Args   struct {
-		Key   string `description:"key name" positional-arg-name:"key" required:"yes"`
-		Value string `description:"Value to put if stream flag is not enabled"`
+	Args struct {
+		Key   string `description:"key name" positional-arg-name:"key"`
+		Value string `description:"Value to put. Used STDIN if not set"`
 	} `positional-args:"yes"`
 }
 
 func (s *setKey) Execute(args []string) error {
-	var data = []byte(s.Args.Value)
-	if s.Stream || len(data) == 0 {
-		v, err := ioutil.ReadAll(os.Stdin)
-		if err != nil {
-			return err
-		}
-		data = v
-	}
 	db := config.Storage()
 	defer db.Close()
-	return db.Put([]byte(s.Args.Key), data)
+	if len(s.Args.Key) > 0 {
+		var data = []byte(s.Args.Value)
+		if len(data) == 0 {
+			v, err := ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				return err
+			}
+			data = v
+		}
+		return db.Put([]byte(s.Args.Key), data)
+	} else {
+		reader := bufio.NewScanner(os.Stdin)
+		for reader.Scan() {
+			line := reader.Bytes()
+			if len(line) == 0 {
+				continue
+			}
+			kv := bytes.SplitN(line, []byte{' '}, 2)
+			if len(kv) == 1 {
+				continue
+			}
+			err := db.Put(kv[0], kv[1])
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 type removeKey struct {
