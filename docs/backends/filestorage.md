@@ -44,6 +44,32 @@ Where:
 
 * `<path>` - path to root directory
 
+### JSON
+
+Constructor: `NewJSONFile`
+
+Stores everything in one file. File overwrites atomically. 
+
+With JSON encoding all data presented as dictionary in `data` field and namespaces in `namespaces` field.
+
+All information cached in-memory. Any modification operation will rewrite file fully.
+
+This kind of storage is limited by RAM size and requires quite a number of sycalls for update. So it's good for:
+
+* Using data from another systems (JSON is a standard) or by humans
+* Many reads and few writes
+
+#### URL initialization
+
+Do not forget to import package!
+
+`file+json://<path>`
+
+Where:
+
+* `<path>` - path to file
+
+
 ## Usage
 
 **Flat**

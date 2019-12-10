@@ -62,6 +62,7 @@ func Test_Storages(t *testing.T) {
 	//TestAWS(t)
 	// Flat files
 	TestFlat(t)
+	TestFileJSON(t)
 	// Test bolt
 	TestBolt(t)
 	// Test REST client and server
@@ -152,6 +153,13 @@ func TestFlat(t *testing.T) {
 	stor := filestorage.NewFlat(testDir)
 	testShouldBeNS(t, stor)
 	testStorage(t, stor, testDir, true)
+}
+
+func TestFileJSON(t *testing.T) {
+	testFile := "../test/data.json"
+	stor := filestorage.NewJSONFile(testFile)
+	testShouldBeNS(t, stor)
+	testStorage(t, stor, "", true)
 }
 
 func TestAWS(t *testing.T) {
