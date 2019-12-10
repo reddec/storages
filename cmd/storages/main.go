@@ -114,19 +114,25 @@ func (l listKeys) Execute(args []string) error {
 
 type getKey struct {
 	Args struct {
-		Key string `description:"key name" positional-arg-name:"key" required:"yes"`
+		Key []string `description:"key names, if not set - STDIN lines used" positional-arg-name:"keys"`
 	} `positional-args:"yes"`
 }
 
 func (g *getKey) Execute(args []string) error {
 	db := config.Storage()
 	defer db.Close()
-	v, err := db.Get([]byte(g.Args.Key))
-	if err != nil {
-		return err
+	keys := getArgs(g.Args.Key...)
+	for keys.Scan() {
+		v, err := db.Get(keys.Bytes())
+		if err != nil {
+			return err
+		}
+		_, err = os.Stdout.Write(v)
+		if err != nil {
+			return err
+		}
 	}
-	_, err = os.Stdout.Write(v)
-	return err
+	return nil
 }
 
 type setKey struct {
