@@ -94,7 +94,7 @@ func (l listKeys) getCodec() (LineCodec, error) {
 		return internal.NewPlainLine(os.Stdout, 0, false), nil
 	case "plain":
 		return internal.NewPlainLine(os.Stdout, '\n', true), nil
-	case "bas64", "b64":
+	case "base64", "b64":
 		return internal.NewBase64Line(os.Stdout), nil
 	default:
 		return nil, errors.Errorf("encoding %v not known", l.Type)
