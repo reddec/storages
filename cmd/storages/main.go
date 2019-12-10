@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/reddec/storages"
 	"github.com/reddec/storages/cmd/storages/internal"
+	storageconfig "github.com/reddec/storages/config"
 	"github.com/reddec/storages/std"
 	_ "github.com/reddec/storages/std/awsstorage"
 	_ "github.com/reddec/storages/std/boltdb"
@@ -31,6 +32,7 @@ import (
 
 type Config struct {
 	URL       string        `short:"u" long:"url" env:"URL" description:"Storage URL" default:"bbolt://data"`
+	Key       string        `short:"k" long:"key" env:"KEY" description:"Key in storage where configuration defined"`
 	Supported listSupported `command:"supported" description:"list supported storages backends"`
 	List      listKeys      `command:"list" alias:"ls" description:"list keys in storage"`
 	Get       getKey        `command:"get" alias:"fetch" alias:"g" description:"get value by key"`
@@ -38,14 +40,28 @@ type Config struct {
 	Del       removeKey     `command:"remove" alias:"delete" alias:"del" alias:"rm" description:"remove value by key"`
 	Copy      cpKeys        `command:"copy" alias:"cp" alias:"c" description:"copy keys from storage to destination"`
 	Serve     restServe     `command:"serve" alias:"rest" description:"expose storage over REST interface"`
+	Config    configCmd     `command:"config" alias:"cfg" description:"operations on configuration"`
 }
 
-func (cfg *Config) Storage() storages.Storage {
+func (cfg *Config) getSource() storages.Storage {
 	db, err := std.Create(config.URL)
 	if err != nil {
 		log.Fatal("failed initialize db:", err)
 	}
 	return db
+}
+
+func (cfg *Config) Storage() storages.Storage {
+	src := cfg.getSource()
+	if cfg.Key == "" {
+		return src
+	}
+	stor, err := storageconfig.ParseJSON([]byte(cfg.Key), src)
+	src.Close()
+	if err != nil {
+		log.Fatal("failed initialize db based on configuration from ", cfg.Key, ":", err)
+	}
+	return stor
 }
 
 var config Config

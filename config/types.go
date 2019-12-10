@@ -52,9 +52,11 @@ func (rrs ReadStrategy) GetStrategy(backs []storages.Storage) storages.DReader {
 // Write strategy config for redundant storage
 type WriteStrategy struct {
 	// At least specified amount of successful writes should be done for success
-	AtLeast *struct {
-		Num int `json:"num" yaml:"num" xml:"num"` // minimal amount of successful write
-	} `json:"atleast" yaml:"atleast" xml:"atleast"`
+	AtLeast *AtLeast `json:"atleast" yaml:"atleast" xml:"atleast"`
+}
+
+type AtLeast struct {
+	Num int `json:"num" yaml:"num" xml:"num"` // minimal amount of successful write
 }
 
 // Initialize strategy. If no strategy defined - all writes should be complete without error for success
