@@ -32,6 +32,8 @@ import (
 	"time"
 )
 
+var version string = "dev"
+
 type Config struct {
 	URL       string        `short:"u" long:"url" env:"URL" description:"Storage URL" default:"bbolt://data"`
 	Key       string        `short:"k" long:"key" env:"KEY" description:"Key in storage where configuration defined"`
@@ -86,7 +88,9 @@ var config Config
 
 func main() {
 	log.SetOutput(os.Stderr)
-	_, err := flags.Parse(&config)
+	parser := flags.NewParser(&config, flags.Default)
+	parser.LongDescription = "Tools to work with storages\nAuthor: Baryshnikov Aleksandr <dev@baryshnikov.net>\nVersion: " + version
+	_, err := parser.Parse()
 	if err != nil {
 		os.Exit(1)
 	}
