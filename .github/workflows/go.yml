@@ -21,4 +21,4 @@ jobs:
         go get -v -t -d ./cmd/...
     - name: Build
       run: |
-        CGO_ENABLED=0 go build -ldflags="-w -s" -v -ldflags "-s -w -X "main.version=$(git describe --tags --abbrev=0)" -o storages -trimpath ./cmd/storages
+        CGO_ENABLED=0 go build -ldflags="-w -s" -v -ldflags "-s -w -X main.version=$(git describe --tags --abbrev=0)" -o storages -trimpath ./cmd/storages
