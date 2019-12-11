@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jessevdk/go-flags"
+	"github.com/juju/fslock"
 	"github.com/pkg/errors"
 	"github.com/reddec/storages"
 	"github.com/reddec/storages/cmd/storages/internal"
@@ -19,6 +20,7 @@ import (
 	_ "github.com/reddec/storages/std/redistorage"
 	"github.com/reddec/storages/std/rest"
 	_ "github.com/reddec/storages/std/rest"
+	stor_utils "github.com/reddec/storages/utils"
 	"io"
 	"io/ioutil"
 	"log"
@@ -33,6 +35,7 @@ import (
 type Config struct {
 	URL       string        `short:"u" long:"url" env:"URL" description:"Storage URL" default:"bbolt://data"`
 	Key       string        `short:"k" long:"key" env:"KEY" description:"Key in storage where configuration defined"`
+	Lock      string        `short:"l" long:"lock" env:"LOCK" description:"Optional lock file for inter-process synchronization"`
 	Supported listSupported `command:"supported" description:"list supported storages backends"`
 	List      listKeys      `command:"list" alias:"ls" description:"list keys in storage"`
 	Get       getKey        `command:"get" alias:"fetch" alias:"g" description:"get value by key"`
@@ -44,9 +47,23 @@ type Config struct {
 }
 
 func (cfg *Config) getSource() storages.Storage {
+	var lock *fslock.Lock
+	if cfg.Lock != "" {
+		lock = fslock.New(cfg.Lock)
+		err := lock.Lock()
+		if err != nil {
+			log.Fatal("failed lock:", err)
+		}
+	}
+
 	db, err := std.Create(config.URL)
 	if err != nil {
 		log.Fatal("failed initialize db:", err)
+	}
+	if lock != nil {
+		db = stor_utils.WithCloseHook(db, func() {
+			lock.Unlock()
+		})
 	}
 	return db
 }

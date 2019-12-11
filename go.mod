@@ -9,6 +9,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/gorilla/schema v1.1.0
 	github.com/jessevdk/go-flags v1.4.0
+	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/knq/snaker v0.0.0-20181215144011-2bc8a4db4687
 	github.com/pkg/errors v0.8.1
 	github.com/reddec/chop-text v0.0.0-20170808164554-6118a9210e96
