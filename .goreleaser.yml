@@ -57,7 +57,3 @@ changelog:
     - '^doc:'
     - '^test:'
     - '^build:'
-puts:
-  - name: bintray
-    target: https://api.bintray.com/content/reddec/storages-debian/{{ .ProjectName }}/{{ .Version }}/
-    username: reddec

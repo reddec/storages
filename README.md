@@ -41,6 +41,54 @@ if err != nil {
 defer storage.Close()
 ```
 
+# CLI tools
+
+### Binary
+
+Look to releases section
+
+### Debian/Ubuntu
+
+Add public Bintray key
+
+```bash
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
+```
+
+#### Add repository
+
+* supported distribution: trusty, xenial, bionic, buster, wheezy
+
+```bash
+echo "deb https://dl.bintray.com/reddec/storages-debian {distribution} main" | sudo tee -a /etc/apt/sources.list
+```
+
+**Ubuntu 18.04 (bionic)**
+
+```bash
+echo "deb https://dl.bintray.com/reddec/storages-debian bionic main" | sudo tee -a /etc/apt/sources.list
+```
+
+**Ubuntu 16.04 (xenial)**
+
+```bash
+echo "deb https://dl.bintray.com/reddec/storages-debian xenial main" | sudo tee -a /etc/apt/sources.list
+```
+
+#### Update cache
+
+`sudo apt-get update`
+
+### Install
+
+`sudo apt-get install storages`
+
+### Build from source
+
+* requires Go 1.13+
+
+`go get github.com/reddec/storages/cmd/...`
+
 # License
 
 The wrappers itself licensed under MIT but used libraries may have different license politics.
