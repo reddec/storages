@@ -1,26 +1,22 @@
 # Queues
 
+
+    | data 1 | data 2 | data 3 | ... | data N |
+    <-- tail (oldest)         head (latest) -->
+
 Wrappers around KV-storage that makes a queues. Idea is to keep minimal and maximum id and use sequence to generate 
 next key for KV storage.
+
+Data always append to head and reads from tail (FIFO).
 
 import: `github.com/reddec/storages/queues`
 
 ## Basic queue
 
-* peek - get last but do not remove
+* peek - get oldest data but do not remove
 * put - push data to the end of queue
-* clean - remove data from the first till specified sequence id. Remove all is: `Clean(queue.Last()+1)`
+* discard - remove data oldest data
 
 Constructors:
 
-* `Simple`
-* `SimpleBounded`
-
-## Limited queue
-
-Queue that removes old items if no more space available (like circular buffer) on `Put` operation.
-
-Constructors:
-
-* `Limited`
-* `SimpleLimited` - shorthand for `Limited(Simple(...))`
+* `Naive`

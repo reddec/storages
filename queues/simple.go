@@ -91,8 +91,8 @@ func (sq *simpleQueue) Iterate(from int64) storages.Iterator {
 	}
 }
 
-// Simple queue based on storage. Scans all keys to find minimum and maximum sequence number
-func Simple(storage storages.Storage) (storages.Queue, error) {
+// Simple queue based on storage. Scans all keys to find minimum and maximum lastSequence number
+func Simple(storage storages.Storage) (*simpleQueue, error) {
 	var min int64 = math.MaxInt64
 	var max int64 = math.MinInt64
 	err := storage.Keys(func(key []byte) error {
@@ -120,7 +120,7 @@ func Simple(storage storages.Storage) (storages.Queue, error) {
 }
 
 // Simple queue based on storage with manually defined minimal and maximum sequences
-func SimpleBound(storage storages.Accessor, minID, maxID int64) storages.Queue {
+func SimpleBound(storage storages.Accessor, minID, maxID int64) *simpleQueue {
 	var nextId = maxID + 1
 	return &simpleQueue{
 		minID:   minID,

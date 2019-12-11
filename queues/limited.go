@@ -6,7 +6,7 @@ import (
 )
 
 type limitedQueue struct {
-	queue storages.Queue
+	queue storages.LegacyQueue
 	lock  sync.Mutex
 	limit int64
 }
@@ -55,7 +55,7 @@ func (lq *limitedQueue) Limit() int64 { return lq.limit }
 func (lq *limitedQueue) Iterate(from int64) storages.Iterator { return lq.queue.Iterate(from) }
 
 // Wrap any queue as limited queue
-func Limited(queue storages.Queue, limit int64) storages.LimitedQueue {
+func Limited(queue storages.LegacyQueue, limit int64) storages.LimitedQueue {
 	return &limitedQueue{
 		limit: limit,
 		queue: queue,

@@ -128,7 +128,7 @@ func TestLimitedQueue(t *testing.T) {
 	}
 }
 
-func validateHelloWorld(t *testing.T, queue storages.Queue) bool {
+func validateHelloWorld(t *testing.T, queue storages.LegacyQueue) bool {
 	id, data, err := queue.Peek()
 	if err != nil {
 		t.Error(err)
