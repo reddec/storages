@@ -35,7 +35,7 @@ import (
 type Config struct {
 	URL       string        `short:"u" long:"url" env:"URL" description:"Storage URL" default:"bbolt://data"`
 	Key       string        `short:"k" long:"key" env:"KEY" description:"Key in storage where configuration defined"`
-	Lock      string        `short:"l" long:"lock" env:"LOCK" description:"Optional lock file for inter-process synchronization"`
+	Lock      string        `short:"L" long:"lock" env:"LOCK" description:"Optional lock file for inter-process synchronization"`
 	Supported listSupported `command:"supported" description:"list supported storages backends"`
 	List      listKeys      `command:"list" alias:"ls" description:"list keys in storage"`
 	Get       getKey        `command:"get" alias:"fetch" alias:"g" description:"get value by key"`
@@ -44,6 +44,7 @@ type Config struct {
 	Copy      cpKeys        `command:"copy" alias:"cp" alias:"c" description:"copy keys from storage to destination"`
 	Serve     restServe     `command:"serve" alias:"rest" description:"expose storage over REST interface"`
 	Config    configCmd     `command:"config" alias:"cfg" description:"operations on configuration"`
+	Queue     queueCmd      `command:"queue" alias:"q" description:"access to storage by naive queue interface"`
 }
 
 func (cfg *Config) getSource() storages.Storage {
@@ -165,7 +166,7 @@ func (g *getKey) Execute(args []string) error {
 			return err
 		}
 	}
-	return nil
+	return os.Stdout.Close()
 }
 
 type setKey struct {
