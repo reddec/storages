@@ -1,0 +1,57 @@
+# This is an example goreleaser.yaml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+builds:
+- env:
+  - CGO_ENABLED=0
+  main: ./cmd/storages
+  binary: storages
+  goarch:
+    - amd64
+    - 386
+    - arm
+    - arm64
+  goos:
+    - linux
+    - windows
+    - darwin
+    - freebsd
+  goarm:
+    - 5
+    - 6
+    - 7
+  flags:
+    - -trimpath
+archives:
+- replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386
+    amd64: x86_64
+  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+  files:
+    - LICENSE
+    - README.md
+    - '*.1.gz'
+nfpms:
+  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    replacements:
+      Linux: linux
+      386: i386
+    homepage: https://github.com/reddec/tinc-boot
+    maintainer: Baryshnikov Aleksandr <owner@reddec.net>
+    description: Tools to manipulate with different kinds of storages
+    license: MIT
+    formats:
+      - deb
+      - rpm
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'

@@ -1,5 +1,8 @@
-name: Go
-on: [push]
+name: Build tools
+on:
+  push:
+    tags:
+      - 'v*'
 jobs:
 
   build:
@@ -16,9 +19,10 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
-    - name: Get dependencies
-      run: |
-        go get -v -t -d ./cmd/...
-    - name: Build
-      run: |
-        CGO_ENABLED=0 go build -ldflags="-w -s" -v -ldflags "-s -w -X main.version=$(git describe --tags --abbrev=0)" -o storages -trimpath ./cmd/storages
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v1
+      with:
+        version: latest
+        args: release --rm-dist
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

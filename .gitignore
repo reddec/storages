@@ -3,3 +3,4 @@ test
 build
 .idea
 vendor
+dist
