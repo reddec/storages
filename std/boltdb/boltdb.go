@@ -68,7 +68,8 @@ func (bdb *boltDB) Get(key []byte) ([]byte, error) {
 		if value == nil {
 			return os.ErrNotExist
 		}
-		ans = value
+		ans = make([]byte, len(value))
+		copy(ans, value)
 		return nil
 	})
 	return ans, err
