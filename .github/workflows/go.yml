@@ -39,5 +39,5 @@ jobs:
           component=$(echo $name | awk -F_  '{print $1}')
           arch=$(echo $package | sed s/.deb// | awk -F_  '{print $NF}')
           echo "component: $component; arch: $arch"
-          curl -f -s -T "$package" -u "${USERNAME}:${UPLOAD_BINTRAY_PASSWORD}" "https://api.bintray.com/content/reddec/storages-debian/${component}/${GITHUB_REF##*/}/${name}?publish=1;deb_component=main;deb_distribution=${DISTRIBUTION};deb_architecture=${arch}"
+          curl -f -s -T "$package" -u "${USERNAME}:${UPLOAD_BINTRAY_PASSWORD}" "https://api.bintray.com/content/reddec/storages-debian/${component}/${GITHUB_REF##*/}/${name};publish=1;deb_component=main;deb_distribution=${DISTRIBUTION};deb_architecture=${arch}"
         done
