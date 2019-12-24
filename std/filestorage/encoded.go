@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/reddec/storages"
 	"github.com/reddec/storages/std"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -17,7 +18,7 @@ type EncoderFunc func(value interface{}) ([]byte, error)
 type DecoderFunc func(data []byte, value interface{}) error
 
 // New single file storage with custom encoder and decoder
-func NewEncodedFile(filename string, encoderFunc EncoderFunc, decoderFunc DecoderFunc) *encodedNamespace {
+func NewEncodedFile(filename string, encoderFunc EncoderFunc, decoderFunc DecoderFunc) (*encodedNamespace, error) {
 	stor := &encodedStorage{
 		encoder:  encoderFunc,
 		decoder:  decoderFunc,
@@ -27,11 +28,11 @@ func NewEncodedFile(filename string, encoderFunc EncoderFunc, decoderFunc Decode
 		data:    &dataType{},
 		storage: stor,
 	}
-	return &stor.root
+	return &stor.root, stor.readDumpOnce()
 }
 
 // New single file storage with JSON encoding
-func NewJSONFile(filename string) *encodedNamespace {
+func NewJSONFile(filename string) (*encodedNamespace, error) {
 	return NewEncodedFile(filename, func(value interface{}) (bytes []byte, err error) {
 		return json.MarshalIndent(value, "", "  ")
 	}, json.Unmarshal)
@@ -157,8 +158,18 @@ func (e *encodedStorage) safeDump() error {
 	return safeWrite(e.filename, bin)
 }
 
+func (e *encodedStorage) readDumpOnce() error {
+	data, err := ioutil.ReadFile(e.filename)
+	if os.IsNotExist(err) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+	return e.decoder(data, e.root.data)
+}
+
 func init() {
 	std.RegisterWithMapper("file+json", func(url *url.URL) (storage storages.Storage, e error) {
-		return NewJSONFile(filepath.Join(url.Host, url.Path)), nil
+		return NewJSONFile(filepath.Join(url.Host, url.Path))
 	})
 }

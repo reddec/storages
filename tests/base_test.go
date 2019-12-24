@@ -157,7 +157,11 @@ func TestFlat(t *testing.T) {
 
 func TestFileJSON(t *testing.T) {
 	testFile := "../test/data.json"
-	stor := filestorage.NewJSONFile(testFile)
+	stor, err := filestorage.NewJSONFile(testFile)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	testShouldBeNS(t, stor)
 	testStorage(t, stor, "", true)
 }
