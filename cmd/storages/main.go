@@ -262,7 +262,7 @@ type restServe struct {
 	Bind             string        `long:"bind" env:"BIND" description:"Address to where bind HTTP server" default:"0.0.0.0:8080"`
 	TLS              bool          `long:"tls" env:"TLS" description:"Enable HTTPS serving with TLS"`
 	CertFile         string        `long:"cert-file" env:"CERT_FILE" description:"Path to certificate for TLS" default:"server.crt"`
-	KeyFile          string        `long:"key-file" env:"KEY_FILE" description:"Path to private key for TLS" default:"sever.key"`
+	KeyFile          string        `long:"key-file" env:"KEY_FILE" description:"Path to private key for TLS" default:"server.key"`
 }
 
 func (r *restServe) Execute(args []string) error {
