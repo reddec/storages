@@ -37,6 +37,27 @@ Available commands:
 
 See `storages <command> --help`
 
+### Queues
+
+```
+Usage:
+  storages [OPTIONS] queue <command>
+
+Application Options:
+  -u, --url=      Storage URL (default: bbolt://data) [$URL]
+  -k, --key=      Key in storage where configuration defined [$KEY]
+  -L, --lock=     Optional lock file for inter-process synchronization [$LOCK]
+
+Help Options:
+  -h, --help      Show this help message
+
+Available commands:
+  discard  remove oldest data from queue (like silent get)
+  get      get oldest data from queue and remove it (aliases: pop)
+  peek     get oldest data from queue but not remove
+  put      put data to the queue (aliases: push, append)
+  serve    expose queue over REST interface (aliases: rest)
+```
 
 
 # Install

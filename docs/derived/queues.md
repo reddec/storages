@@ -20,3 +20,15 @@ import: `github.com/reddec/storages/queues`
 Constructors:
 
 * `Naive`
+
+
+## HTTP expose
+
+It's possible to expose queue over HTTP by `NewServer(queue)`  
+
+
+| Method   | Path   | Success status | Description |
+|----------|--------|----------------|-------------
+| `GET`    | `/`    | 200            | Peek last message in queue (404 NotFound if queue is empty)
+| `POST`   | `/`    | 204            | Add message to queue
+| `DELETE` | `/`    | 200            | Get last message from queue and remove it. Last message will be returned otherwise 404 not found
