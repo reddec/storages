@@ -14,7 +14,7 @@ social network (person can have friends),  users accounts (several accounts for 
              +--------+     |
              |  key0  |  ---+
     links    |  key1  |
-	         |  ...   |
+             |  ...   |
              +--------+
 
 
