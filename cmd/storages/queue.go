@@ -2,12 +2,16 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"github.com/pkg/errors"
 	"github.com/reddec/storages"
 	"github.com/reddec/storages/queues"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"time"
 )
 
 const statusNoData = 127
@@ -17,6 +21,7 @@ type queueCmd struct {
 	Peek    queuePeek    `command:"peek" description:"get oldest data from queue but not remove"`
 	Get     queueGet     `command:"get" alias:"pop" description:"get oldest data from queue and remove it"`
 	Discard queueDiscard `command:"discard" description:"remove oldest data from queue (like silent get)"`
+	Serve   queueServe   `command:"serve" alias:"rest" description:"expose queue over REST interface"`
 }
 
 type queuePut struct {
@@ -118,4 +123,36 @@ func (cfg Config) getQueue() (storages.Queue, storages.Storage) {
 		log.Fatal("open queue:", err)
 	}
 	return queue, db
+}
+
+type queueServe struct {
+	GracefulShutdown time.Duration `long:"graceful-shutdown" env:"GRACEFUL_SHUTDOWN" description:"Interval before server shutdown" default:"15s"`
+	Bind             string        `long:"bind" env:"BIND" description:"Address to where bind HTTP server" default:"0.0.0.0:8080"`
+	TLS              bool          `long:"tls" env:"TLS" description:"Enable HTTPS serving with TLS"`
+	CertFile         string        `long:"cert-file" env:"CERT_FILE" description:"Path to certificate for TLS" default:"server.crt"`
+	KeyFile          string        `long:"key-file" env:"KEY_FILE" description:"Path to private key for TLS" default:"server.key"`
+}
+
+func (qs *queueServe) Execute(args []string) error {
+	queue, db := config.getQueue()
+	defer db.Close()
+
+	server := http.Server{
+		Addr:    qs.Bind,
+		Handler: queues.NewServer(queue),
+	}
+
+	go func() {
+		c := make(chan os.Signal, 2)
+		signal.Notify(c, os.Kill, os.Interrupt)
+		<-c
+		ctx, cancel := context.WithTimeout(context.Background(), qs.GracefulShutdown)
+		defer cancel()
+		server.Shutdown(ctx)
+	}()
+	log.Println("REST queue server is on", qs.Bind)
+	if qs.TLS {
+		return server.ListenAndServeTLS(qs.CertFile, qs.KeyFile)
+	}
+	return server.ListenAndServe()
 }
