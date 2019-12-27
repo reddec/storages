@@ -49,6 +49,8 @@ Look to releases section
 
 ### Debian/Ubuntu
 
+[![Debian version](https://api.bintray.com/packages/reddec/storages-debian/storages/images/download.svg)](https://bintray.com/reddec/storages-debian/storages/_latestVersion)
+
 Add public Bintray key
 
 ```bash
