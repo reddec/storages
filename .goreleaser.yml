@@ -38,7 +38,7 @@ nfpms:
     replacements:
       Linux: linux
       386: i386
-    homepage: https://github.com/reddec/tinc-boot
+    homepage: https://github.com/reddec/storages
     maintainer: Baryshnikov Aleksandr <owner@reddec.net>
     description: Tools to manipulate with different kinds of storages
     license: MIT
