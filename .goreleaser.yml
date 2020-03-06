@@ -1,5 +1,6 @@
 # This is an example goreleaser.yaml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
+project_name: storages
 builds:
 - env:
   - CGO_ENABLED=0
@@ -14,7 +15,6 @@ builds:
     - linux
     - windows
     - darwin
-    - freebsd
   goarm:
     - 5
     - 6
@@ -34,7 +34,7 @@ archives:
     - README.md
     - '*.1.gz'
 nfpms:
-  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+  - file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     replacements:
       Linux: linux
       386: i386
@@ -44,11 +44,19 @@ nfpms:
     license: MIT
     formats:
       - deb
-      - rpm
 checksum:
   name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ .Tag }}-next"
+uploads:
+  - name: bintray
+    method: PUT
+    mode: archive
+    username: reddec
+    custom_artifact_name: true
+    ids:
+      - debian
+    target: 'https://api.bintray.com/content/reddec/debian/{{ .ProjectName }}/{{ .Version }}/{{ .ArtifactName }};publish=1;deb_component=main;deb_distribution=all;deb_architecture={{ .Arch }}'
 changelog:
   sort: asc
   filters:

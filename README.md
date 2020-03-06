@@ -62,19 +62,19 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D
 * supported distribution: trusty, xenial, bionic, buster, wheezy
 
 ```bash
-echo "deb https://dl.bintray.com/reddec/storages-debian {distribution} main" | sudo tee -a /etc/apt/sources.list
+echo "deb https://dl.bintray.com/reddec/debian {distribution} main" | sudo tee -a /etc/apt/sources.list
 ```
 
 **Ubuntu 18.04 (bionic)**
 
 ```bash
-echo "deb https://dl.bintray.com/reddec/storages-debian bionic main" | sudo tee -a /etc/apt/sources.list
+echo "deb https://dl.bintray.com/reddec/debian bionic main" | sudo tee -a /etc/apt/sources.list
 ```
 
 **Ubuntu 16.04 (xenial)**
 
 ```bash
-echo "deb https://dl.bintray.com/reddec/storages-debian xenial main" | sudo tee -a /etc/apt/sources.list
+echo "deb https://dl.bintray.com/reddec/debian xenial main" | sudo tee -a /etc/apt/sources.list
 ```
 
 #### Update cache
